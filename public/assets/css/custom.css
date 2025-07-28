@@ -1,0 +1,90 @@
+.widget-dashboard h2 {
+  margin-top: -1px;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+}
+.widget-dashboard .nav-item:last-child {
+  margin-right: 3.5rem;
+}
+.widget-dashboard .list {
+  border-bottom: none;
+}
+.widget-dashboard .list a {
+  padding: 1rem 0 1.1rem;
+  color: #777;
+  letter-spacing: -0.025em;
+  font-size: 1.4rem;
+}
+.widget-dashboard .list a:hover, .widget-dashboard .list a:focus {
+  background: transparent;
+}
+.widget-dashboard .list a.active {
+  color: #222524;
+  font-weight: 700;
+}
+.widget-dashboard li:last-child a {
+  border-bottom: 0;
+}
+.widget-dashboard li {
+  padding: 8px 0 8px 0;
+}
+.widget-dashboard li:before {
+  display: none;
+}
+.custom-account-container {
+  margin-bottom: 5.6rem;
+}
+.nav-tabs.list .nav-item {
+  padding: 0;
+}
+.nav-tabs.list .nav-item .nav-link {
+  padding: 1.3rem 0 1.5rem;
+  font-family: "Open Sans", sans-serif;
+  text-transform: capitalize;
+  font-size: 1.4rem;
+  border: none;
+}
+.nav-tabs.list .nav-item .nav-link:not(.active) {
+  font-weight: 400;
+  color: #777;
+}
+.nav-tabs.list .nav-item .nav-link.address, .nav-tabs.list .nav-item .nav-link.active {
+  font-weight: 700;
+  color: #222529;
+}
+.dashboard-content .btn-link {
+  display: inline;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: inherit;
+  vertical-align: top;
+  white-space: normal;
+}
+.dashboard-content p {
+  line-height: 1.75;
+}
+.dashboard-content p:first-child {
+  margin-top: -0.2rem;
+  margin-bottom: 2.4rem;
+}
+.dashboard-content .feature-box {
+  padding-top: 3.5rem;
+  margin-bottom: 2rem;
+  border: 2px solid #e7e7e7;
+}
+.dashboard-content .feature-box i {
+  margin-bottom: 2.5rem;
+  color: #d3d3d4;
+  font-size: 6rem;
+  transition: transform 0.35s;
+}
+.dashboard-content .feature-box:hover i {
+  transform: scale(1.15);
+  transition: transform 0.35s;
+}
+@media (max-width: 575px) {
+  .dashboard-content .feature-box h3 {
+    font-size: 1.3rem;
+  }
+}
