@@ -80,12 +80,12 @@
                                         </a>
                                         <ul class="sub-menu">
                                             <li class="sub-menu-item">
-                                                <a href="add-product.html" class="">
+                                                <a href="{{route('admin.product.add')}}" class="">
                                                     <div class="text">Add Product</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="products.html" class="">
+                                                <a href="{{route('admin.products')}}" class="">
                                                     <div class="text">Products</div>
                                                 </a>
                                             </li>
@@ -93,41 +93,22 @@
                                     </li>
                                     <li class="menu-item has-children">
                                         <a href="javascript:void(0);" class="menu-item-button">
-                                            <div class="icon"><i class="icon-layers"></i></div>
-                                            <div class="text">Brand</div>
+                                                <div class="icon"><i class="icon-layers"></i></div>
+                                                <div class="text">Category</div>
                                         </a>
                                         <ul class="sub-menu">
-                                            <li class="sub-menu-item">
-                                                <a href="add-brand.html" class="">
-                                                    <div class="text">New Brand</div>
-                                                </a>
-                                            </li>
-                                            <li class="sub-menu-item">
-                                                <a href="brands.html" class="">
-                                                    <div class="text">Brands</div>
-                                                </a>
-                                            </li>
+                                                <li class="sub-menu-item">
+                                                        <a href="{{route('admin.category.add')}}" class="">
+                                                        <div class="text">New Category</div>
+                                                        </a>
+                                                </li>
+                                                <li class="sub-menu-item">
+                                                        <a href="{{route('admin.categories')}}" class="">
+                                                        <div class="text">Categories</div>
+                                                        </a>
+                                                </li>
                                         </ul>
                                     </li>
-                                    <li class="menu-item has-children">
-                                        <a href="javascript:void(0);" class="menu-item-button">
-                                            <div class="icon"><i class="icon-layers"></i></div>
-                                            <div class="text">Category</div>
-                                        </a>
-                                        <ul class="sub-menu">
-                                            <li class="sub-menu-item">
-                                                <a href="add-category.html" class="">
-                                                    <div class="text">New Category</div>
-                                                </a>
-                                            </li>
-                                            <li class="sub-menu-item">
-                                                <a href="categories.html" class="">
-                                                    <div class="text">Categories</div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-
                                     <li class="menu-item has-children">
                                         <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-file-plus"></i></div>
@@ -462,7 +443,7 @@
                         <div class="main-content">
                             @yield('main-content')
                             <div class="bottom-page">
-                                <div class="body-text">Copyright © 2024 SurfsideMedia</div>
+                                <div class="body-text">Copyright © 2025 Fridah Spices</div>
                             </div>
                         </div>
 

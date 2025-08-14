@@ -21,11 +21,6 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" id="download-tab" data-toggle="tab" href="#download" role="tab"
-                        aria-controls="download" aria-selected="false">Downloads</a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab"
                         aria-controls="address" aria-selected="false">Addresses</a>
                 </li>
@@ -157,17 +152,6 @@
                         <hr class="mt-0 mb-3 pb-2" />
 
                         <a href="category.html" class="btn btn-dark">Go Shop</a>
-                    </div>
-                </div>
-            </div><!-- End .tab-pane -->
-
-            <div class="tab-pane fade" id="download" role="tabpanel">
-                <div class="download-content">
-                    <h3 class="account-sub-title d-none d-md-block"><i
-                            class="sicon-cloud-download align-middle mr-3"></i>Downloads</h3>
-                    <div class="download-table-container">
-                        <p>No downloads available yet.</p> <a href="category.html"
-                            class="btn btn-primary text-transform-none mb-2">GO SHOP</a>
                     </div>
                 </div>
             </div><!-- End .tab-pane -->

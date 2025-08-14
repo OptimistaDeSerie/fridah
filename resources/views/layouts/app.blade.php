@@ -4,11 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Fridah's Spice</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="Fridah's Spice" />
         <meta name="description" content="Fridah's Spice - Your one-stop shop for all spices" />
         <meta name="author" content="SW-THEMES">
@@ -22,13 +19,6 @@
                     families: ['Open+Sans:300,400,600,700,800', 'Poppins:200,300,400,500,600,700,800', 'Oswald:300,400,500,600,700,800']
                 }
             };
-            (function(d) {
-                var wf = d.createElement('script'),
-                    s = d.scripts[0];
-                wf.src = '{{ asset("assets/js/webfont.js") }}';
-                wf.async = true;
-                s.parentNode.insertBefore(wf, s);
-            })(document);
         </script>
 
         <!-- Plugins CSS File -->
@@ -57,7 +47,7 @@
                                 <i class="icon-shipping text-primary"></i>
 
                                 <div class="info-box-content0">
-                                    <h4 class="mb-0">FREE Express Shipping On Orders $99+</h4>
+                                    <h4 class="mb-0">FREE Express Shipping On Orders ₦50,000+</h4>
                                 </div>
                                 <!-- End .info-box-content -->
                             </div>
@@ -66,33 +56,7 @@
                         <!-- End .header-left -->
 
                         <div class="header-right header-dropdowns">
-                            <div class="header-dropdown font2">
-                                <a href="#">USD</a>
-                                <div class="header-menu">
-                                    <ul>
-                                        <li><a href="#">EUR</a></li>
-                                        <li><a href="#">USD</a></li>
-                                    </ul>
-                                </div>
-                                <!-- End .header-menu -->
-                            </div>
-                            <!-- End .header-dropown -->
-
-                            <div class="header-dropdown mr-4 pl-2 font2">
-                                <a href="#">ENG</a>
-                                <div class="header-menu">
-                                    <ul>
-                                        <li><a href="#">ENG</a>
-                                        </li>
-                                        <li><a href="#">FRH</a></li>
-                                    </ul>
-                                </div>
-                                <!-- End .header-menu -->
-                            </div>
-                            <!-- End .header-dropown -->
-
                             <div class="separator d-none d-lg-inline"></div>
-
                             <div class="header-dropdown dropdown-expanded d-none d-lg-block">
                                 <a href="#">Links</a>
                                 <div class="header-menu">
@@ -126,7 +90,7 @@
                                         @else
                                         <li>
                                             <a href="{{ Auth::user()->user_type == 'admin' ? route('admin.index') : route('user.index') }}">
-                                                <i class="icon-user-2"></i> {{ Auth::user()->name }}
+                                                <i class="icon-user-2"></i> {{ Auth::user()->firstname }}
                                             </a>
                                         </li>
                                         @endguest
@@ -156,7 +120,7 @@
                                 <i class="fas fa-bars"></i>
                             </button>
                             <a href="{{ route('index') }}" class="logo">
-                                <img src="{{ asset('assets/images/logo-black.png') }}" class="w-100" width="111" height="44" alt="Porto Logo">
+                                <img loading="lazy" src="{{ asset('assets/images/logo-black.png') }}" class="w-100" width="111" height="44" alt="Porto Logo">
                             </a>
                             <div class="header-icon header-search header-search-inline header-search-category d-lg-block d-none text-right mt-0">
                                 <a href="#" class="search-toggle" role="button"><i class="icon-magnifier"></i></a>
@@ -203,110 +167,21 @@
 
                             <div class="cart-dropdown-wrapper d-flex align-items-center">
                                 <div class="dropdown cart-dropdown">
-                                    <a href="#" title="Cart" class="dropdown-toggle cart-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                    <a href="{{route('cart.index')}}" title="Cart" class="dropdown-toggle cart-toggle">
                                         <i class="icon-cart-thick"></i>
-                                        <span class=" cart-count badge-circle">3</span>
+                                         @if(Cart::instance('cart')->content()->count()>0)
+                                            <span class=" cart-count badge-circle">{{Cart::instance('cart')->content()->count()}}</span>
+                                         @endif
                                     </a>
-
-                                    <div class="cart-overlay"></div>
-
-                                    <div class="dropdown-menu mobile-cart">
-                                        <a href="#" title="Close (Esc)" class="btn-close">×</a>
-
-                                        <div class="dropdownmenu-wrapper custom-scrollbar">
-                                            <div class="dropdown-cart-header">Shopping Cart</div>
-                                            <!-- End .dropdown-cart-header -->
-
-                                            <div class="dropdown-cart-products">
-                                                <div class="product">
-                                                    <div class="product-details">
-                                                        <h4 class="product-title">
-                                                            <a href="demo35-product.html">Ultimate 3D Bluetooth Speaker</a>
-                                                        </h4>
-
-                                                        <span class="cart-product-info">
-                                                            <span class="cart-product-qty">1</span> × $99.00
-                                                        </span>
-                                                    </div>
-                                                    <!-- End .product-details -->
-
-                                                    <figure class="product-image-container">
-                                                        <a href="demo35-product.html" class="product-image">
-                                                            <img src="{{ asset('assets/images/products/product-1.jpg')  }}" alt="product" width="80" height="80">
-                                                        </a>
-
-                                                        <a href="#" class="btn-remove" title="Remove Product"><span>×</span></a>
-                                                    </figure>
-                                                </div>
-                                                <!-- End .product -->
-
-                                                <div class="product">
-                                                    <div class="product-details">
-                                                        <h4 class="product-title">
-                                                            <a href="demo35-product.html">Brown Women Casual HandBag</a>
-                                                        </h4>
-
-                                                        <span class="cart-product-info">
-                                                            <span class="cart-product-qty">1</span> × $35.00
-                                                        </span>
-                                                    </div>
-                                                    <!-- End .product-details -->
-
-                                                    <figure class="product-image-container">
-                                                        <a href="demo35-product.html" class="product-image">
-                                                            <img src="{{ asset('assets/images/products/product-2.jpg')  }}" alt="product" width="80" height="80">
-                                                        </a>
-
-                                                        <a href="#" class="btn-remove" title="Remove Product"><span>×</span></a>
-                                                    </figure>
-                                                </div>
-                                                <!-- End .product -->
-
-                                                <div class="product">
-                                                    <div class="product-details">
-                                                        <h4 class="product-title">
-                                                            <a href="demo35-product.html">Circled Ultimate 3D Speaker</a>
-                                                        </h4>
-
-                                                        <span class="cart-product-info">
-                                                            <span class="cart-product-qty">1</span> × $35.00
-                                                        </span>
-                                                    </div>
-                                                    <!-- End .product-details -->
-
-                                                    <figure class="product-image-container">
-                                                        <a href="demo35-product.html" class="product-image">
-                                                            <img src="{{ asset('assets/images/products/product-3.jpg')  }}" alt="product" width="80" height="80">
-                                                        </a>
-                                                        <a href="#" class="btn-remove" title="Remove Product"><span>×</span></a>
-                                                    </figure>
-                                                </div>
-                                                <!-- End .product -->
-                                            </div>
-                                            <!-- End .cart-product -->
-
-                                            <div class="dropdown-cart-total">
-                                                <span>SUBTOTAL:</span>
-
-                                                <span class="cart-total-price float-right">$134.00</span>
-                                            </div>
-                                            <!-- End .dropdown-cart-total -->
-
-                                            <div class="dropdown-cart-action">
-                                                <a href="cart.html" class="btn btn-gray btn-block view-cart">View
-                                                    Cart</a>
-                                                <a href="checkout.html" class="btn btn-dark btn-block">Checkout</a>
-                                            </div>
-                                            <!-- End .dropdown-cart-total -->
-                                        </div>
-                                        <!-- End .dropdownmenu-wrapper -->
-                                    </div>
-                                    <!-- End .dropdown-menu -->
                                 </div>
                                 <!-- End .dropdown -->
 
                                 <span class="cart-subtotal font2 d-none d-sm-inline">Shopping Cart
-                                    <span class="cart-price d-block font2">$0.00</span>
+                                    @if(Cart::instance('cart')->content()->count()>0)
+                                        <span class="cart-price d-block font2">{{$currency}}{{Cart::instance('cart')->subtotal()}}</span>
+                                    @else
+                                        <span class="cart-price d-block font2">{{$currency}}0.00</span>
+                                    @endif
                                 </span>
                             </div>
                         </div>
@@ -322,7 +197,7 @@
                             <nav class="main-nav d-flex font2">
                                 <div class="menu-depart">
                                     <a href="{{ route('index') }}"><i class="fa fa-bars align-middle mr-3"></i>All
-                                        Departments</a>
+                                        Categories</a>
                                     <ul class="menu menu-vertical">
                                         <li>
                                             <a href="#"><i class="icon-category-fashion"></i>Fashion</a>
@@ -381,7 +256,7 @@
                                                     <div class="col-md-6 text-right">
                                                         <div class="menu-banner menu-banner-2 d-inline-block position-relative h-auto">
                                                             <figure class="text-right">
-                                                                <img src="{{ asset('assets/images/demoes/demo35/menu-banner-1.jpg')  }}" alt="Menu banner" class="product-promo d-inline-block" width="300" height="383">
+                                                                <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/menu-banner-1.jpg')  }}" alt="Menu banner" class="product-promo d-inline-block" width="300" height="383">
                                                             </figure>
                                                             <i>OFF</i>
                                                             <div class="banner-content text-left">
@@ -407,19 +282,19 @@
                                                                 }
                                                             }">
                                                                 <div class="partner">
-                                                                    <img src="{{ asset('assets/images/brands/small/brand1.png') }}" alt="logo image" width="140" height="60">
+                                                                    <img loading="lazy" src="{{ asset('assets/images/brands/small/brand1.png') }}" alt="logo image" width="140" height="60">
                                                                 </div>
                                                                 <div class="partner">
-                                                                    <img src="{{ asset('assets/images/brands/small/brand2.png')  }}" alt="logo image" width="140" height="60">
+                                                                    <img loading="lazy" src="{{ asset('assets/images/brands/small/brand2.png')  }}" alt="logo image" width="140" height="60">
                                                                 </div>
                                                                 <div class="partner">
-                                                                    <img src="{{ asset('assets/images/brands/small/brand3.png')  }}" alt="logo image" width="140" height="60">
+                                                                    <img loading="lazy" src="{{ asset('assets/images/brands/small/brand3.png')  }}" alt="logo image" width="140" height="60">
                                                                 </div>
                                                                 <div class="partner">
-                                                                    <img src="{{ asset('assets/images/brands/small/brand4.png')  }}" alt="logo image" width="140" height="60">
+                                                                    <img loading="lazy" src="{{ asset('assets/images/brands/small/brand4.png')  }}" alt="logo image" width="140" height="60">
                                                                 </div>
                                                                 <div class="partner">
-                                                                    <img src="{{ asset('assets/images/brands/small/brand5.png')  }}" alt="logo image" width="140" height="60">
+                                                                    <img loading="lazy" src="{{ asset('assets/images/brands/small/brand5.png')  }}" alt="logo image" width="140" height="60">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -509,7 +384,7 @@
                                                     <div class="col-md-6">
                                                         <div class="banner menu-banner-3 banner-md-vw text-transform-none">
                                                             <figure>
-                                                                <img src="{{ asset('assets/images/demoes/demo35/menu-banner-2.jpg')  }}" alt="banner">
+                                                                <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/menu-banner-2.jpg')  }}" alt="banner">
                                                             </figure>
 
                                                             <div class="banner-layer banner-layer-middle d-flex align-items-center justify-content-end pt-0">
@@ -531,7 +406,7 @@
                                                     <div class="col-md-6">
                                                         <div class="banner menu-banner-4 banner-md-vw">
                                                             <figure>
-                                                                <img src="{{ asset('assets/images/demoes/demo35/menu-banner-3.jpg')  }}" alt="banner">
+                                                                <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/menu-banner-3.jpg')  }}" alt="banner">
                                                             </figure>
 
                                                             <div class="banner-layer banner-layer-middle d-flex align-items-end flex-column">
@@ -562,7 +437,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-3 mb-1">
                                                         <div class="image-wrapper">
-                                                            <img src="{{ asset('assets/images/demoes/demo35/icons/boy.png')  }}" alt="icon" width="50" height="68" />
+                                                            <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/icons/boy.png')  }}" alt="icon" width="50" height="68" />
                                                         </div>
                                                         <a href="#" class="nolink">FOR HIM</a>
                                                         <ul class="submenu pb-0">
@@ -580,7 +455,7 @@
 
                                                     <div class="col-lg-3 mb-1">
                                                         <div class="image-wrapper">
-                                                            <img src="{{ asset('assets/images/demoes/demo35/icons/girl.png')  }}" alt="icon" width="50" height="68" />
+                                                            <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/icons/girl.png')  }}" alt="icon" width="50" height="68" />
                                                         </div>
                                                         <a href="#" class="nolink">FOR HER</a>
                                                         <ul class="submenu pb-0">
@@ -598,7 +473,7 @@
 
                                                     <div class="col-lg-3 mb-1">
                                                         <div class="image-wrapper">
-                                                            <img src="{{ asset('assets/images/demoes/demo35/icons/kid.png')  }}" alt="icon" width="50" height="68" />
+                                                            <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/icons/kid.png')  }}" alt="icon" width="50" height="68" />
                                                         </div>
                                                         <a href="#" class="nolink">FOR KIDS</a>
                                                         <ul class="submenu pb-0">
@@ -615,7 +490,7 @@
 
                                                     <div class="col-lg-3 mb-1">
                                                         <div class="image-wrapper">
-                                                            <img src="{{ asset('assets/images/demoes/demo35/icons/supermarket.png')  }}" alt="icon" width="50" height="68" />
+                                                            <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/icons/supermarket.png')  }}" alt="icon" width="50" height="68" />
                                                         </div>
                                                         <a href="#" class="nolink">BIRTHDAY</a>
                                                         <ul class="submenu pb-0">
@@ -701,7 +576,7 @@
                                                             <div class="product-default left-details product-widget">
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/small/product-1.jpg')  }}" width="84" height="84" alt="product">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/small/product-1.jpg')  }}" width="84" height="84" alt="product">
                                                                     </a>
                                                                 </figure>
 
@@ -729,7 +604,7 @@
                                                             <div class="product-default left-details product-widget">
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/small/product-2.jpg')  }}" width="84" height="84" alt="product">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/small/product-2.jpg')  }}" width="84" height="84" alt="product">
                                                                     </a>
                                                                 </figure>
 
@@ -757,7 +632,7 @@
                                                             <div class="product-default left-details product-widget">
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/small/product-3.jpg')  }}" width="84" height="84" alt="product">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/small/product-3.jpg')  }}" width="84" height="84" alt="product">
                                                                     </a>
                                                                 </figure>
 
@@ -785,7 +660,7 @@
                                                             <div class="product-default left-details product-widget">
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/small/product-4.jpg')  }}" width="84" height="84" alt="product">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/small/product-4.jpg')  }}" width="84" height="84" alt="product">
                                                                     </a>
                                                                 </figure>
 
@@ -813,7 +688,7 @@
                                                             <div class="product-default left-details product-widget">
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/small/product-5.jpg')  }}" width="84" height="84" alt="product">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/small/product-5.jpg')  }}" width="84" height="84" alt="product">
                                                                     </a>
                                                                 </figure>
 
@@ -954,7 +829,7 @@
                                                                 </h2>
                                                                 <figure>
                                                                     <a href="demo35-product.html">
-                                                                        <img src="{{ asset('assets/images/demoes/demo35/products/product-16.jpg')  }}" alt="product" width="1200" height="1200">
+                                                                        <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/products/product-16.jpg')  }}" alt="product" width="1200" height="1200">
                                                                     </a>
                                                                     <div class="product-countdown-container">
                                                                         <span class="product-countdown-title">offer ends
@@ -996,64 +871,7 @@
                                     </ul>
                                 </div>
                                 <ul class="menu">
-                                    <li>
-                                        <a href="{{ route('index') }}">Shop</a>
-                                        <div class="megamenu megamenu-fixed-width megamenu-3cols">
-                                            <div class="row">
-                                                <div class="col-lg-4">
-                                                    <a href="#" class="nolink">VARIATION 1</a>
-                                                    <ul class="submenu">
-                                                        <li><a href="category.html">Fullwidth Banner</a></li>
-                                                        <li><a href="category-banner-boxed-slider.html">Boxed Slider
-                                                                Banner</a>
-                                                        </li>
-                                                        <li><a href="category-banner-boxed-image.html">Boxed Image
-                                                                Banner</a>
-                                                        </li>
-                                                        <li><a href="category.html">Left Sidebar</a></li>
-                                                        <li><a href="category-sidebar-right.html">Right Sidebar</a></li>
-                                                        <li><a href="category-off-canvas.html">Off Canvas Filter</a></li>
-                                                        <li><a href="category-horizontal-filter1.html">Horizontal
-                                                                Filter1</a>
-                                                        </li>
-                                                        <li><a href="category-horizontal-filter2.html">Horizontal
-                                                                Filter2</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-lg-4">
-                                                    <a href="#" class="nolink">VARIATION 2</a>
-                                                    <ul class="submenu">
-                                                        <li><a href="category-list.html">List Types</a></li>
-                                                        <li><a href="category-infinite-scroll.html">Ajax Infinite Scroll</a>
-                                                        </li>
-                                                        <li><a href="category.html">3 Columns Products</a></li>
-                                                        <li><a href="category-4col.html">4 Columns Products</a></li>
-                                                        <li><a href="category-5col.html">5 Columns Products</a></li>
-                                                        <li><a href="category-6col.html">6 Columns Products</a></li>
-                                                        <li><a href="category-7col.html">7 Columns Products</a></li>
-                                                        <li><a href="category-8col.html">8 Columns Products</a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-lg-4 p-0">
-                                                    <div class="menu-banner">
-                                                        <figure>
-                                                            <img src="{{ asset('assets/images/menu-banner.jpg')  }}" alt="Menu banner" width="300" height="300">
-                                                        </figure>
-                                                        <div class="banner-content">
-                                                            <h4>
-                                                                <span class="">UP TO</span><br />
-                                                                <b class="">50%</b>
-                                                                <i>OFF</i>
-                                                            </h4>
-                                                            <a href="category.html" class="btn btn-sm btn-dark">SHOP NOW</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End .megamenu -->
-                                    </li>
+                                    <li><a href="{{ route('shop.index') }}">Shop</a></li>
                                     <li>
                                         <a href="demo35-product.html">Products</a>
                                         <div class="megamenu megamenu-fixed-width">
@@ -1092,7 +910,7 @@
                                                 <div class="col-lg-4 p-0">
                                                     <div class="menu-banner menu-banner-2">
                                                         <figure>
-                                                            <img src="{{ asset('assets/images/menu-banner-1.jpg')  }}" alt="Menu banner" class="product-promo" width="380" height="790">
+                                                            <img loading="lazy" src="{{ asset('assets/images/menu-banner-1.jpg')  }}" alt="Menu banner" class="product-promo" width="380" height="790">
                                                         </figure>
                                                         <i>OFF</i>
                                                         <div class="banner-content">
@@ -1236,7 +1054,7 @@
                                 <div class="widget mb-3">
                                     <h4 class="widget-title">Payment Methods</h4>
 
-                                    <img src="{{ asset('assets/images/demoes/demo35/payment.png')  }}" alt="payment" width="240" height="32">
+                                    <img loading="lazy" src="{{ asset('assets/images/demoes/demo35/payment.png')  }}" alt="payment" width="240" height="32">
                                 </div>
                             </div>
                             <!-- End .row -->
@@ -1285,82 +1103,7 @@
                                 <li><a href="category-8col.html">8 Columns Products</a></li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="demo35-product.html">Products</a>
-                            <ul>
-                                <li>
-                                    <a href="#" class="nolink">PRODUCT PAGES</a>
-                                    <ul>
-                                        <li><a href="demo35-product.html">SIMPLE PRODUCT</a></li>
-                                        <li><a href="product-variable.html">VARIABLE PRODUCT</a></li>
-                                        <li><a href="demo35-product.html">SALE PRODUCT</a></li>
-                                        <li><a href="demo35-product.html">FEATURED & ON SALE</a></li>
-                                        <li><a href="product-sticky-info.html">WIDTH CUSTOM TAB</a></li>
-                                        <li><a href="product-sidebar-left.html">WITH LEFT SIDEBAR</a></li>
-                                        <li><a href="product-sidebar-right.html">WITH RIGHT SIDEBAR</a></li>
-                                        <li><a href="product-addcart-sticky.html">ADD CART STICKY</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#" class="nolink">PRODUCT LAYOUTS</a>
-                                    <ul>
-                                        <li><a href="product-extended-layout.html">EXTENDED LAYOUT</a></li>
-                                        <li><a href="product-grid-layout.html">GRID IMAGE</a></li>
-                                        <li><a href="product-full-width.html">FULL WIDTH LAYOUT</a></li>
-                                        <li><a href="product-sticky-info.html">STICKY INFO</a></li>
-                                        <li><a href="product-sticky-both.html">LEFT & RIGHT STICKY</a></li>
-                                        <li><a href="product-transparent-image.html">TRANSPARENT IMAGE</a></li>
-                                        <li><a href="product-center-vertical.html">CENTER VERTICAL</a></li>
-                                        <li><a href="#">BUILD YOUR OWN</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Pages<span class="tip tip-hot">Hot!</span></a>
-                            <ul>
-                                <li>
-                                    <a href="wishlist.html">Wishlist</a>
-                                </li>
-                                <li>
-                                    <a href="cart.html">Shopping Cart</a>
-                                </li>
-                                <li>
-                                    <a href="checkout.html">Checkout</a>
-                                </li>
-                                <li>
-                                    <a href="dashboard.html">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login</a>
-                                </li>
-                                <li>
-                                    <a href="forgot-password.html">Forgot Password</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li>
-                            <a href="#">Elements</a>
-                            <ul class="custom-scrollbar">
-                                <li><a href="element-accordions.html">Accordion</a></li>
-                                <li><a href="element-alerts.html">Alerts</a></li>
-                                <li><a href="element-animations.html">Animations</a></li>
-                                <li><a href="element-banners.html">Banners</a></li>
-                                <li><a href="element-buttons.html">Buttons</a></li>
-                                <li><a href="element-call-to-action.html">Call to Action</a></li>
-                                <li><a href="element-countdown.html">Count Down</a></li>
-                                <li><a href="element-counters.html">Counters</a></li>
-                                <li><a href="element-headings.html">Headings</a></li>
-                                <li><a href="element-icons.html">Icons</a></li>
-                                <li><a href="element-info-box.html">Info box</a></li>
-                                <li><a href="element-posts.html">Posts</a></li>
-                                <li><a href="element-products.html">Products</a></li>
-                                <li><a href="element-product-categories.html">Product Categories</a></li>
-                                <li><a href="element-tabs.html">Tabs</a></li>
-                                <li><a href="element-testimonial.html">Testimonials</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{{route('shop.index')}}">Shop</a></li>
                     </ul>
 
                     <ul class="mobile-menu mt-2 mb-2">
@@ -1382,7 +1125,7 @@
                         <li><a href="contact.html">Contact Us</a></li>
                         <li><a href="blog.html">Blog</a></li>
                         <li><a href="wishlist.html">My Wishlist</a></li>
-                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="{{route('cart.index')}}">Cart</a></li>
                         <li><a href="login.html" class="login-link">Log In</a></li>
                     </ul>
                 </nav>
@@ -1428,9 +1171,11 @@
                 </a>
             </div>
             <div class="sticky-info">
-                <a href="cart.html" class="">
+                <a href="{{ route('cart.index') }}" class="">
                     <i class="icon-shopping-cart position-relative">
-                        <span class="cart-count badge-circle">3</span>
+                        @if(Cart::instance('cart')->content()->count()>0)
+                            <span class=" cart-count badge-circle">{{Cart::instance('cart')->content()->count()}}</span>
+                        @endif
                     </i>Cart
                 </a>
             </div>
@@ -1439,15 +1184,13 @@
         <a id="scroll-top" href="#top" title="Top" role="button"><i class="icon-angle-up"></i></a>
 
         <!-- Plugins JS File -->
-        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins.min.js') }}"></script>
-        <script src="{{ asset('assets/js/optional/isotope.pkgd.min.js') }}"></script>
-        <script src="{{ asset('assets/js/jquery.appear.min.js') }}"></script>
-        <script src="{{ asset('assets/js/jquery.plugin.min.js') }}"></script>
-        <script src="{{ asset('assets/js/jquery.countdown.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
+        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}" defer></script>
+        <script src="{{ asset('assets/js/plugins.min.js') }}" defer></script>
+        <script src="{{ asset('assets/js/jquery.appear.min.js') }}" defer></script>
+        <script src="{{ asset('assets/js/jquery.plugin.min.js') }}" defer></script>
         <!-- Main JS File -->
-        <script src="{{ asset('assets/js/main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/main.min.js') }}" defer></script>
         @stack("scripts")
     </body>
 </html>
