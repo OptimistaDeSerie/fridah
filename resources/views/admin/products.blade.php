@@ -42,8 +42,8 @@
                 <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add new</a>
             </div>
             <div class="table-responsive">
-                @if(Session::has('status'))
-                    <p class="alert alert-success">{{Session::get('status')}}</p>
+                @if(Session::has('success'))
+                    <p class="alert alert-success">{{ Session::get('success') }}</p>
                 @endif
                 <table class="table table-striped table-bordered">
                     <thead>

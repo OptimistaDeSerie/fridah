@@ -2,22 +2,327 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Users
+        DB::table('users')->insert([
+            [
+                'id' => 1,
+                'firstname' => 'victor',
+                'lastname' => 'etim',
+                'phone' => '08163478000',
+                'email' => 'victor.aetim@gmail.com',
+                'email_verified_at' => null,
+                'password' => '$2y$12$NG0w8TkMqnMdjoEQ7wgIdeZKg0Byz2kmWpd97rneWLALfuXTdvX1S',
+                'user_type' => 'admin',
+                'remember_token' => null,
+                'created_at' => '2025-07-28 12:14:34',
+                'updated_at' => '2025-07-28 12:14:34',
+            ],
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Carriers
+        DB::table('carriers')->insert([
+            [
+                'id' => 1,
+                'title' => 'GIG',
+                'created_at' => '2025-09-12 23:46:46',
+                'updated_at' => '2025-09-12 23:46:56',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Local Carriers',
+                'created_at' => '2025-09-12 23:46:50',
+                'updated_at' => '2025-09-12 23:47:00',
+            ],
+        ]);
+
+        // Weights
+        DB::table('weights')->insert([
+            [
+                'id' => 1,
+                'title' => '0 to 4kg',
+                'created_at' => '2025-09-12 23:45:30',
+                'updated_at' => '2025-09-12 23:45:59',
+            ],
+        ]);
+
+        // States
+        DB::table('states')->insert([
+            ['id' => 1, 'title' => 'Abia', 'created_at' => '2025-09-10 15:36:13', 'updated_at' => '2025-09-10 15:36:29'],
+            ['id' => 2, 'title' => 'Adamawa', 'created_at' => '2025-09-10 15:36:24', 'updated_at' => '2025-09-10 15:36:32'],
+            ['id' => 3, 'title' => 'Akwa Ibom', 'created_at' => '2025-09-10 15:36:39', 'updated_at' => '2025-09-10 15:36:36'],
+            ['id' => 4, 'title' => 'Anambra', 'created_at' => '2025-09-10 16:04:07', 'updated_at' => '2025-09-10 16:04:28'],
+            ['id' => 5, 'title' => 'Bauchi', 'created_at' => '2025-09-10 16:04:31', 'updated_at' => '2025-09-10 16:04:37'],
+            ['id' => 6, 'title' => 'Bayelsa', 'created_at' => null, 'updated_at' => null],
+            ['id' => 7, 'title' => 'Benue', 'created_at' => null, 'updated_at' => null],
+            ['id' => 8, 'title' => 'Borno', 'created_at' => null, 'updated_at' => null],
+            ['id' => 9, 'title' => 'Cross River', 'created_at' => null, 'updated_at' => null],
+            ['id' => 10, 'title' => 'Delta', 'created_at' => null, 'updated_at' => null],
+            ['id' => 11, 'title' => 'Ebonyi', 'created_at' => null, 'updated_at' => null],
+            ['id' => 12, 'title' => 'Edo', 'created_at' => null, 'updated_at' => null],
+            ['id' => 13, 'title' => 'Ekiti', 'created_at' => null, 'updated_at' => null],
+            ['id' => 14, 'title' => 'Enugu', 'created_at' => null, 'updated_at' => null],
+            ['id' => 15, 'title' => 'Gombe', 'created_at' => null, 'updated_at' => null],
+            ['id' => 16, 'title' => 'Imo', 'created_at' => null, 'updated_at' => null],
+            ['id' => 17, 'title' => 'Jigawa', 'created_at' => null, 'updated_at' => null],
+            ['id' => 18, 'title' => 'Kano', 'created_at' => null, 'updated_at' => null],
+            ['id' => 19, 'title' => 'Katsina', 'created_at' => null, 'updated_at' => null],
+            ['id' => 20, 'title' => 'Kebbi', 'created_at' => null, 'updated_at' => null],
+            ['id' => 21, 'title' => 'Kogi', 'created_at' => null, 'updated_at' => null],
+            ['id' => 22, 'title' => 'Kwara', 'created_at' => null, 'updated_at' => null],
+            ['id' => 23, 'title' => 'Lagos', 'created_at' => null, 'updated_at' => null],
+            ['id' => 24, 'title' => 'Nasarawa', 'created_at' => null, 'updated_at' => null],
+            ['id' => 25, 'title' => 'Niger', 'created_at' => null, 'updated_at' => null],
+            ['id' => 26, 'title' => 'Ogun', 'created_at' => null, 'updated_at' => null],
+            ['id' => 27, 'title' => 'Ondo', 'created_at' => null, 'updated_at' => null],
+            ['id' => 28, 'title' => 'Osun', 'created_at' => null, 'updated_at' => null],
+            ['id' => 29, 'title' => 'Oyo', 'created_at' => null, 'updated_at' => null],
+            ['id' => 30, 'title' => 'Plateau', 'created_at' => null, 'updated_at' => null],
+            ['id' => 31, 'title' => 'Rivers', 'created_at' => null, 'updated_at' => null],
+            ['id' => 32, 'title' => 'Sokoto', 'created_at' => null, 'updated_at' => null],
+            ['id' => 33, 'title' => 'Taraba', 'created_at' => '2025-09-14 15:40:01', 'updated_at' => '2025-09-14 15:40:01'],
+            ['id' => 34, 'title' => 'Yobe', 'created_at' => '2025-09-14 15:40:01', 'updated_at' => '2025-09-14 15:40:01'],
+            ['id' => 35, 'title' => 'Zamfara', 'created_at' => '2025-09-14 15:40:59', 'updated_at' => '2025-09-14 15:40:59'],
+            ['id' => 36, 'title' => 'Federal Capital Territory', 'created_at' => '2025-09-14 15:40:59', 'updated_at' => '2025-09-14 15:40:59'],
+        ]);
+
+        // Categories
+        DB::table('categories')->insert([
+            [
+                'id' => 4,
+                'name' => 'Seasoning Blend',
+                'slug' => 'seasoning-blend',
+                'image' => '1753914726.png',
+                'parent_id' => null,
+                'created_at' => '2025-07-30 21:24:28',
+                'updated_at' => '2025-07-30 21:32:06',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Spices',
+                'slug' => 'spices',
+                'image' => '1753914684.png',
+                'parent_id' => null,
+                'created_at' => '2025-07-30 21:31:24',
+                'updated_at' => '2025-07-30 21:31:24',
+            ],
+        ]);
+
+        // Products
+        DB::table('products')->insert([
+            [
+                'id' => 6,
+                'name' => 'Minced Red Onion',
+                'slug' => 'minced-red-onion',
+                'short_description' => 'This is just a product',
+                'description' => 'This is just a product This is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a productThis is just a product',
+                'regular_price' => 4000.00,
+                'sale_price' => 2200.00,
+                'SKU' => '1231',
+                'stock_status' => 'outofstock',
+                'featured' => 1,
+                'quantity' => 50,
+                'image' => '1753920633.jpg',
+                'images' => '1753920633-1.jpg,1753920633-2.jpg,1753920633-3.jpg',
+                'category_id' => 5,
+                'created_at' => '2025-07-30 23:10:46',
+                'updated_at' => '2025-07-30 23:11:33',
+            ],
+            [
+                'id' => 7,
+                'name' => 'test 2',
+                'slug' => 'test-2',
+                'short_description' => 'abc',
+                'description' => 'abcdef',
+                'regular_price' => 1300.00,
+                'sale_price' => 1200.00,
+                'SKU' => '11114',
+                'stock_status' => 'instock',
+                'featured' => 0,
+                'quantity' => 50,
+                'image' => '1753922523.jpg',
+                'images' => '1753922523-1.jpg,1753922523-2.jpg',
+                'category_id' => 4,
+                'created_at' => '2025-07-30 23:42:13',
+                'updated_at' => '2025-07-30 23:42:13',
+            ],
+            [
+                'id' => 8,
+                'name' => 'Test 3',
+                'slug' => 'test-3',
+                'short_description' => 'avdf',
+                'description' => 'qadqwed',
+                'regular_price' => 1300.00,
+                'sale_price' => 1000.00,
+                'SKU' => '11113',
+                'stock_status' => 'instock',
+                'featured' => 0,
+                'quantity' => 50,
+                'image' => '1753922574.jpg',
+                'images' => '1753922574-1.jpg,1753922574-2.jpg',
+                'category_id' => 5,
+                'created_at' => '2025-07-30 23:42:55',
+                'updated_at' => '2025-07-30 23:42:55',
+            ],
+            [
+                'id' => 9,
+                'name' => 'Test 4',
+                'slug' => 'test-4',
+                'short_description' => 'we',
+                'description' => 'wrf',
+                'regular_price' => 4000.00,
+                'sale_price' => 1200.00,
+                'SKU' => '11111',
+                'stock_status' => 'instock',
+                'featured' => 0,
+                'quantity' => 50,
+                'image' => '1753922606.jpg',
+                'images' => '1753922606-1.jpg,1753922606-2.jpg',
+                'category_id' => 4,
+                'created_at' => '2025-07-30 23:43:27',
+                'updated_at' => '2025-07-30 23:43:27',
+            ],
+            [
+                'id' => 10,
+                'name' => 'Test 5',
+                'slug' => 'test-5',
+                'short_description' => 'rgfwef',
+                'description' => 'wefwe',
+                'regular_price' => 4000.00,
+                'sale_price' => 2200.00,
+                'SKU' => '11111',
+                'stock_status' => 'instock',
+                'featured' => 0,
+                'quantity' => 50,
+                'image' => '1753922645.jpg',
+                'images' => '1753922645-1.jpg,1753922645-2.jpg',
+                'category_id' => 4,
+                'created_at' => '2025-07-30 23:44:07',
+                'updated_at' => '2025-07-30 23:44:07',
+            ],
+            [
+                'id' => 11,
+                'name' => 'Test 6',
+                'slug' => 'test-6',
+                'short_description' => 'wef',
+                'description' => 'wfwf',
+                'regular_price' => 1300.00,
+                'sale_price' => 1000.00,
+                'SKU' => '11111',
+                'stock_status' => 'instock',
+                'featured' => 0,
+                'quantity' => 50,
+                'image' => '1753922679.jpg',
+                'images' => '1753922679-1.jpg,1753922679-2.jpg',
+                'category_id' => 4,
+                'created_at' => '2025-07-30 23:44:41',
+                'updated_at' => '2025-07-30 23:44:41',
+            ],
+        ]);
+
+        // Delivery Fees
+        DB::table('delivery_fees')->insert([
+            ['id' => 2, 'state_id' => 1, 'carrier_id' => 1, 'price' => 13319.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:03:07', 'updated_at' => '2025-09-13 00:03:07'],
+            ['id' => 3, 'state_id' => 1, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:04:25', 'updated_at' => '2025-09-13 00:04:25'],
+            ['id' => 4, 'state_id' => 2, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:04:56', 'updated_at' => '2025-09-13 00:04:56'],
+            ['id' => 5, 'state_id' => 2, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:05:55', 'updated_at' => '2025-09-13 00:05:55'],
+            ['id' => 6, 'state_id' => 3, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:07:17', 'updated_at' => '2025-09-13 00:07:17'],
+            ['id' => 7, 'state_id' => 3, 'carrier_id' => 2, 'price' => 7500.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:07:42', 'updated_at' => '2025-09-13 00:07:42'],
+            ['id' => 8, 'state_id' => 4, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:09:17', 'updated_at' => '2025-09-13 00:09:17'],
+            ['id' => 9, 'state_id' => 4, 'carrier_id' => 2, 'price' => 7500.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:10:38', 'updated_at' => '2025-09-13 00:10:38'],
+            ['id' => 10, 'state_id' => 5, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:11:40', 'updated_at' => '2025-09-13 00:11:40'],
+            ['id' => 11, 'state_id' => 5, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:12:07', 'updated_at' => '2025-09-13 00:12:07'],
+            ['id' => 12, 'state_id' => 6, 'carrier_id' => 1, 'price' => 13319.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:12:55', 'updated_at' => '2025-09-13 00:12:55'],
+            ['id' => 13, 'state_id' => 6, 'carrier_id' => 2, 'price' => 7500.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:13:21', 'updated_at' => '2025-09-13 00:13:21'],
+            ['id' => 14, 'state_id' => 7, 'carrier_id' => 1, 'price' => 12000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:14:03', 'updated_at' => '2025-09-13 00:14:03'],
+            ['id' => 15, 'state_id' => 7, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:14:30', 'updated_at' => '2025-09-13 00:14:30'],
+            ['id' => 16, 'state_id' => 8, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:14:54', 'updated_at' => '2025-09-13 00:14:54'],
+            ['id' => 17, 'state_id' => 8, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-13 00:15:57', 'updated_at' => '2025-09-13 00:15:57'],
+            ['id' => 18, 'state_id' => 9, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:39:35', 'updated_at' => '2025-09-14 13:39:35'],
+            ['id' => 19, 'state_id' => 9, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:39:58', 'updated_at' => '2025-09-14 13:39:58'],
+            ['id' => 20, 'state_id' => 10, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:40:29', 'updated_at' => '2025-09-14 13:40:29'],
+            ['id' => 21, 'state_id' => 10, 'carrier_id' => 1, 'price' => 13319.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:40:48', 'updated_at' => '2025-09-14 13:40:48'],
+            ['id' => 22, 'state_id' => 11, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:42:25', 'updated_at' => '2025-09-14 13:42:25'],
+            ['id' => 23, 'state_id' => 11, 'carrier_id' => 1, 'price' => 13319.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:42:41', 'updated_at' => '2025-09-14 13:42:41'],
+            ['id' => 24, 'state_id' => 12, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:43:09', 'updated_at' => '2025-09-14 13:43:09'],
+            ['id' => 25, 'state_id' => 12, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:43:26', 'updated_at' => '2025-09-14 13:43:26'],
+            ['id' => 26, 'state_id' => 13, 'carrier_id' => 2, 'price' => 7500.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:43:51', 'updated_at' => '2025-09-14 13:43:51'],
+            ['id' => 27, 'state_id' => 13, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:44:07', 'updated_at' => '2025-09-14 13:44:07'],
+            ['id' => 28, 'state_id' => 14, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:48:41', 'updated_at' => '2025-09-14 13:48:41'],
+            ['id' => 29, 'state_id' => 14, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:48:59', 'updated_at' => '2025-09-14 13:48:59'],
+            ['id' => 30, 'state_id' => 15, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:49:27', 'updated_at' => '2025-09-14 13:49:27'],
+            ['id' => 31, 'state_id' => 15, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:49:49', 'updated_at' => '2025-09-14 13:49:49'],
+            ['id' => 32, 'state_id' => 16, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:50:16', 'updated_at' => '2025-09-14 13:50:16'],
+            ['id' => 33, 'state_id' => 16, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:50:31', 'updated_at' => '2025-09-14 13:50:31'],
+            ['id' => 34, 'state_id' => 17, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:50:58', 'updated_at' => '2025-09-14 13:50:58'],
+            ['id' => 35, 'state_id' => 17, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:51:13', 'updated_at' => '2025-09-14 13:51:13'],
+            ['id' => 36, 'state_id' => 18, 'carrier_id' => 2, 'price' => 5000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:51:35', 'updated_at' => '2025-09-14 13:51:35'],
+            ['id' => 37, 'state_id' => 18, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:51:51', 'updated_at' => '2025-09-14 13:51:51'],
+            ['id' => 38, 'state_id' => 19, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:52:29', 'updated_at' => '2025-09-14 13:53:29'],
+            ['id' => 39, 'state_id' => 19, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 13:58:48', 'updated_at' => '2025-09-14 13:58:48'],
+            ['id' => 40, 'state_id' => 20, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:29:07', 'updated_at' => '2025-09-14 15:29:07'],
+            ['id' => 41, 'state_id' => 20, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:29:27', 'updated_at' => '2025-09-14 15:29:27'],
+            ['id' => 42, 'state_id' => 21, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:29:59', 'updated_at' => '2025-09-14 15:29:59'],
+            ['id' => 43, 'state_id' => 21, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:30:16', 'updated_at' => '2025-09-14 15:30:16'],
+            ['id' => 44, 'state_id' => 22, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:30:47', 'updated_at' => '2025-09-14 15:30:47'],
+            ['id' => 45, 'state_id' => 22, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:31:02', 'updated_at' => '2025-09-14 15:31:02'],
+            ['id' => 46, 'state_id' => 23, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:31:39', 'updated_at' => '2025-09-14 15:31:39'],
+            ['id' => 47, 'state_id' => 23, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:31:55', 'updated_at' => '2025-09-14 15:31:55'],
+            ['id' => 48, 'state_id' => 24, 'carrier_id' => 2, 'price' => 5000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:32:27', 'updated_at' => '2025-09-14 15:32:27'],
+            ['id' => 49, 'state_id' => 24, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:32:44', 'updated_at' => '2025-09-14 15:32:44'],
+            ['id' => 50, 'state_id' => 25, 'carrier_id' => 2, 'price' => 5000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:33:04', 'updated_at' => '2025-09-14 15:33:04'],
+            ['id' => 51, 'state_id' => 25, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:33:18', 'updated_at' => '2025-09-14 15:33:18'],
+            ['id' => 52, 'state_id' => 26, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:33:43', 'updated_at' => '2025-09-14 15:34:19'],
+            ['id' => 53, 'state_id' => 26, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:34:05', 'updated_at' => '2025-09-14 15:34:05'],
+            ['id' => 54, 'state_id' => 27, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:34:40', 'updated_at' => '2025-09-14 15:34:40'],
+            ['id' => 55, 'state_id' => 27, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:34:59', 'updated_at' => '2025-09-14 15:34:59'],
+            ['id' => 56, 'state_id' => 28, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:35:18', 'updated_at' => '2025-09-14 15:35:18'],
+            ['id' => 57, 'state_id' => 28, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:35:33', 'updated_at' => '2025-09-14 15:35:33'],
+            ['id' => 58, 'state_id' => 29, 'carrier_id' => 2, 'price' => 7000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:35:55', 'updated_at' => '2025-09-14 15:35:55'],
+            ['id' => 59, 'state_id' => 29, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:36:11', 'updated_at' => '2025-09-14 15:36:11'],
+            ['id' => 60, 'state_id' => 30, 'carrier_id' => 2, 'price' => 5000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:36:37', 'updated_at' => '2025-09-14 15:36:37'],
+            ['id' => 61, 'state_id' => 30, 'carrier_id' => 1, 'price' => 11000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:36:53', 'updated_at' => '2025-09-14 15:36:53'],
+            ['id' => 62, 'state_id' => 31, 'carrier_id' => 2, 'price' => 8000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:37:11', 'updated_at' => '2025-09-14 15:37:11'],
+            ['id' => 63, 'state_id' => 31, 'carrier_id' => 1, 'price' => 13000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:37:27', 'updated_at' => '2025-09-14 15:37:27'],
+            ['id' => 64, 'state_id' => 32, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:37:46', 'updated_at' => '2025-09-14 15:37:46'],
+            ['id' => 65, 'state_id' => 32, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:38:17', 'updated_at' => '2025-09-14 15:38:17'],
+            ['id' => 66, 'state_id' => 33, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:42:13', 'updated_at' => '2025-09-14 15:42:13'],
+            ['id' => 67, 'state_id' => 33, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:42:44', 'updated_at' => '2025-09-14 15:42:44'],
+            ['id' => 68, 'state_id' => 34, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:43:01', 'updated_at' => '2025-09-14 15:43:01'],
+            ['id' => 69, 'state_id' => 34, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:43:17', 'updated_at' => '2025-09-14 15:43:17'],
+            ['id' => 70, 'state_id' => 35, 'carrier_id' => 2, 'price' => 6000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:44:12', 'updated_at' => '2025-09-14 15:44:12'],
+            ['id' => 71, 'state_id' => 35, 'carrier_id' => 1, 'price' => 11145.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:44:46', 'updated_at' => '2025-09-14 15:44:46'],
+            ['id' => 72, 'state_id' => 36, 'carrier_id' => 2, 'price' => 5000.00, 'weight_id' => 1, 'created_at' => '2025-09-14 15:45:16', 'updated_at' => '2025-09-14 15:45:16'],
+        ]);
+
+        // Sessions
+        DB::table('sessions')->insert([
+            [
+                'id' => 'hn1PUKqNivZ8C5Iuall1qAYnDaNfZL4tCMH4TTrS',
+                'user_id' => 1,
+                'ip_address' => '127.0.0.1',
+                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'payload' => 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiTVl1Vmd3aTZFSXN6Y2l4WTByemhzOHphVFBBclE0aGg3cXBwY0JZSyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jaGVja291dCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czo0OiJjYXJ0IjthOjE6e3M6NDoiY2FydCI7TzoyOToiSWxsdW1pbmF0ZVxTdXBwb3J0XENvbGxlY3Rpb24iOjI6e3M6ODoiACoAaXRlbXMiO2E6MTp7czozMjoiNjIwZDY3MGQ5NWYwNDE5ZTM1ZjkxODI2OTU5MThjNjgiO086MzU6IlN1cmZzaWRlbWVkaWFcU2hvcHBpbmdjYXJ0XENhcnRJdGVtIjo5OntzOjU6InJvd0lkIjtzOjMyOiI2MjBkNjcwZDk1ZjA0MTllMzVmOTE4MjY5NTkxOGM2OCI7czoyOiJpZCI7czoyOiIxMSI7czozOiJxdHkiO3M6MToiMSI7czo0OiJuYW1lIjtzOjY6IlRlc3QgNiI7czo1OiJwcmljZSI7ZDoxMDAwO3M6Nzoib3B0aW9ucyI7Tzo0MjoiU3VyZnNpZGVtZWRpYVxTaG9wcGluZ2NhcnRcQ2FydEl0ZW1PcHRpb25zIjoyOntzOjg6IgAqAGl0ZW1zIjthOjA6e31zOjI4OiIAKgBlc2NhcGVXaGVuQ2FzdGluZ1RvU3RyaW5nIjtiOjA7fXM6NTI6IgBTdXJmc2lkZW1lZGlhXFNob3BwaW5nY2FydFxDYXJ0SXRlbQBhc3NvY2lhdGVkTW9kZWwiO3M6MTg6IkFwcFxNb2RlbHNcUHJvZHVjdCI7czo0NDoiAFN1cmZzaWRlbWVkaWFcU2hvcHBpbmdjYXJ0XENhcnRJdGVtAHRheFJhdGUiO2k6MjE7czo0NDoiAFN1cmZzaWRlbWVkaWFcU2hvcHBpbmdjYXJ0XENhcnRJdGVtAGlzU2F2ZWQiO2I6MDt9fXM6Mjg6IgAqAGVzY2FwZVdoZW5DYXN0aW5nVG9TdHJpbmciO2I6MDt9fX0=',
+                'last_activity' => 1759567028,
+            ],
+            [
+                'id' => 'I9li1l4W4LVEilU0cSM1LLgMhoDSY7u3ee8cVKIu',
+                'user_id' => 1,
+                'ip_address' => '127.0.0.1',
+                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'payload' => 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoibHE4RERlOTdWY0ZZYXpZdkR3aDRqbDcxVTFwNTFERVc3WDVKNzhoSSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jaGVja291dCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czo0OiJjYXJ0IjthOjE6e3M6NDoiY2FydCI7TzoyOToiSWxsdW1pbmF0ZVxTdXBwb3J0XENvbGxlY3Rpb24iOjI6e3M6ODoiACoAaXRlbXMiO2E6MTp7czozMjoiNjIwZDY3MGQ5NWYwNDE5ZTM1ZjkxODI2OTU5MThjNjgiO086MzU6IlN1cmZzaWRlbWVkaWFcU2hvcHBpbmdjYXJ0XENhcnRJdGVtIjo5OntzOjU6InJvd0lkIjtzOjMyOiI2MjBkNjcwZDk1ZjA0MTllMzVmOTE4MjY5NTkxOGM2OCI7czoyOiJpZCI7czoyOiIxMSI7czozOiJxdHkiO2k6NDtzOjQ6Im5hbWUiO3M6NjoiVGVzdCA2IjtzOjU6InByaWNlIjtkOjEwMDA7czo3OiJvcHRpb25zIjtPOjQyOiJTdXJmc2lkZW1lZGlhXFNob3BwaW5nY2FydFxDYXJ0SXRlbU9wdGlvbnMiOjI6e3M6ODoiACoAaXRlbXMiO2E6MDp7fXM6Mjg6IgAqAGVzY2FwZVdoZW5DYXN0aW5nVG9TdHJpbmciO2I6MDt9czo1MjoiAFN1cmZzaWRlbWVkaWFcU2hvcHBpbmdjYXJ0XENhcnRJdGVtAGFzc29jaWF0ZWRNb2RlbCI7czoxODoiQXBwXE1vZGVsc1xQcm9kdWN0IjtzOjQ0OiIAU3VyZnNpZGVtZWRpYVxTaG9wcGluZ2NhcnRcQ2FydEl0ZW0AdGF4UmF0ZSI7aToyMTtzOjQ0OiIAU3VyZnNpZGVtZWRpYVxTaG9wcGluZ2NhcnRcQ2FydEl0ZW0AaXNTYXZlZCI7YjowO319czoyODoiACoAZXNjYXBlV2hlbkNhc3RpbmdUb1N0cmluZyI7YjowO319fQ==',
+                'last_activity' => 1759505216,
+            ],
         ]);
     }
 }

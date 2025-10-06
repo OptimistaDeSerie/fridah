@@ -58,13 +58,12 @@
                             <label>Sort By:</label>
 
                             <div class="select-custom">
-                                <select name="orderby" class="form-control">
-                                    <option value="menu_order" selected="selected">Default sorting</option>
-                                    <option value="popularity">Sort by popularity</option>
-                                    <option value="rating">Sort by average rating</option>
-                                    <option value="date">Sort by newness</option>
-                                    <option value="price">Sort by price: low to high</option>
-                                    <option value="price-desc">Sort by price: high to low</option>
+                                <select name="orderby" class="form-control" name="orderby" id="orderby">
+                                    <option value="-1" {{$orderby == -1 ? 'selected':''}} selected>Default sorting</option>
+                                    <option value="1" {{$orderby == 1 ? 'selected':''}}>Date, New to Old</option>
+                                    <option value="2" {{$orderby == 2 ? 'selected':''}}>Date, Old to New</option>
+                                    <option value="3" {{$orderby == 3 ? 'selected':''}}>Price, Low to High</option>
+                                    <option value="4" {{$orderby == 4 ? 'selected':''}}>Price, High to Low</option>
                                 </select>
                             </div>
                             <!-- End .select-custom -->
@@ -78,10 +77,11 @@
                             <label>Show:</label>
 
                             <div class="select-custom">
-                                <select name="count" class="form-control">
-                                    <option value="12">12</option>
-                                    <option value="24">24</option>
-                                    <option value="36">36</option>
+                                <select name="count" class="form-control" id="pagesize" name="pagesize">
+                                    <option value="12" {{ $size == 12 ? 'selected': '' }}>12</option>
+                                    <option value="24" {{ $size == 24 ? 'selected': '' }}>24</option>
+                                    <option value="48" {{ $size == 48 ? 'selected': '' }}>48</option>
+                                    <option value="102" {{ $size == 102 ? 'selected': '' }}>102</option>
                                 </select>
                             </div>
                             <!-- End .select-custom -->
@@ -106,10 +106,10 @@
                                 </h3>
                                 <div class="price-box">
                                     @if($product->sale_price)
-                                        <span class="old-price">{{$currency}}{{$product->regular_price}}</span>
-                                        <span class="product-price">{{$currency}}{{$product->sale_price}}</span>
+                                        <span class="old-price">{{ $currency }}{{ number_format($product->regular_price, 0, '.', ',') }}</span>
+                                        <span class="product-price">{{ $currency }}{{ number_format($product->sale_price, 0, '.', ',') }}</span>
                                     @else
-                                        <span class="old-price">{{$product->regular_price}}</span>
+                                        <span class="old-price">{{ $currency }}{{ number_format($product->regular_price, 0, '.', ',') }}</span>
                                     @endif
                                 </div>
                                 <div class="product-action">
@@ -136,20 +136,6 @@
                     @endforeach
                 </div>
                 <nav class="toolbox toolbox-pagination">
-                    <div class="toolbox-item toolbox-show">
-                        <label>Show:</label>
-
-                        <div class="select-custom">
-                            <select name="count" class="form-control">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="36">36</option>
-                            </select>
-                        </div>
-                        <!-- End .select-custom -->
-                    </div>
-                    <!-- End .toolbox-item -->
-
                     <ul class="pagination toolbox-item">
                         {{$products->withQueryString()->links('pagination::bootstrap-5')}}
                     </ul>
@@ -170,9 +156,13 @@
                                 <ul class="cat-list">
                                     @foreach($categories as $category)
                                         <li>
-                                            <a href="#" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="widget-category-1">
-                                                {{$category->name}}<span class="products-count">({{$category->products_count}})</span>
-                                            </a>
+                                            <label class="cursor-pointer">
+                                                <input type="checkbox" class="mr-1" name="categories" value="{{ $category->id }}"
+                                                    @if(in_array($category->id, $filter_categories)) checked @endif
+                                                />
+                                                {{ $category->name }}
+                                                <span class="products-count">({{ $category->products_count }})</span>
+                                            </label>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -189,82 +179,27 @@
                         </h3>
                         <div class="collapse show" id="widget-body-3">
                                     <div class="widget-body pb-0">
-                                        <form action="#">
-                                            <div class="price-slider-wrapper">
-                                                <div id="price-slider"></div>
-                                                <!-- End #price-slider -->
-                                            </div>
-                                            <!-- End .price-slider-wrapper -->
+                                        <div class="price-slider-wrapper">
+                                            <div id="price-slider"></div>
+                                            <!-- End #price-slider -->
+                                        </div>
+                                        <!-- End .price-slider-wrapper -->
 
-                                            <div class="filter-price-action d-flex align-items-center justify-content-between flex-wrap">
-                                                <div class="filter-price-text">
-                                                    Price:
-                                                    <span id="filter-price-range"></span>
-                                                </div>
-                                                <!-- End .filter-price-text -->
-
-                                                <button type="submit" class="btn btn-primary font2">Filter</button>
+                                        <div class="filter-price-action d-flex align-items-center justify-content-between flex-wrap">
+                                            <div class="filter-price-text">
+                                                Price:
+                                                <span id="filter-price-range"></span>
                                             </div>
-                                            <!-- End .filter-price-action -->
-                                        </form>
+                                            <!-- End .filter-price-text -->
+                                            <a href="{{ route('shop.index') }}" class="btn btn-primary font2">Reset</a>
+                                        </div>
+                                        <!-- End .filter-price-action -->
                                     </div>
                                     <!-- End .widget-body -->
                                 </div>
                         <!-- End .collapse -->
                     </div>
                     <!-- End .widget -->
-
-                    <div class="widget widget-color">
-                        <h3 class="widget-title">
-                            <a data-toggle="collapse" href="#widget-body-4" role="button" aria-expanded="true" aria-controls="widget-body-4">Color</a>
-                        </h3>
-
-                        <div class="collapse show" id="widget-body-4">
-                            <div class="widget-body pb-0">
-                                <ul class="config-swatch-list">
-                                    <li class="active">
-                                        <a href="#" style="background-color: #000;"></a>
-                                    </li>
-                                    <li>
-                                        <a href="#" style="background-color: #0188cc;"></a>
-                                    </li>
-                                    <li>
-                                        <a href="#" style="background-color: #81d742;"></a>
-                                    </li>
-                                    <li>
-                                        <a href="#" style="background-color: #6085a5;"></a>
-                                    </li>
-                                    <li>
-                                        <a href="#" style="background-color: #ab6e6e;"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- End .widget-body -->
-                        </div>
-                        <!-- End .collapse -->
-                    </div>
-                    <!-- End .widget -->
-
-                    <div class="widget widget-size">
-                        <h3 class="widget-title">
-                            <a data-toggle="collapse" href="#widget-body-5" role="button" aria-expanded="true" aria-controls="widget-body-5">Sizes</a>
-                        </h3>
-
-                        <div class="collapse show" id="widget-body-5">
-                            <div class="widget-body pb-0">
-                                <ul class="config-size-list">
-                                    <li class="active"><a href="#">XL</a></li>
-                                    <li><a href="#">L</a></li>
-                                    <li><a href="#">M</a></li>
-                                    <li><a href="#">S</a></li>
-                                </ul>
-                            </div>
-                            <!-- End .widget-body -->
-                        </div>
-                        <!-- End .collapse -->
-                    </div>
-                    <!-- End .widget -->
-
                     <div class="widget widget-featured">
                         <h3 class="widget-title">Featured</h3>
 
@@ -458,6 +393,90 @@
     <div class="mb-4"></div>
     <!-- margin -->
 </main>
+<form id="sizeFilterForm" method="GET" action="{{ route('shop.index') }}">
+    <input type="hidden" name="page" id="page" value="{{ $products->currentPage() }}">
+    <input type="hidden" name="size" id="size" value="{{ $size }}">
+    <input type="hidden" name="order" id="order" value="{{ $orderby }}">
+    <input type="hidden" name="categories" id="hidden_categories">
+    <input type="hidden" name="min_price" id="min_price" value="{{ $min_price }}">
+    <input type="hidden" name="max_price" id="max_price" value="{{ $max_price }}">
+</form>
 <!-- End .main -->
 @endsection
 <script src="{{ asset('assets/js/nouislider.min.js') }}"></script>
+@push('scripts')
+<script>
+    var backendMinPrice = {{ $min_price }};
+    var backendMaxPrice = {{ $max_price }};
+    window.cartIndexUrl = "{{ route('cart.index') }}";
+    $(function() {
+    $(document).on('submit', 'form[name="addtocart-form"]', function(e) {
+        e.preventDefault();
+        let $form = $(this);
+        let url = $form.attr('action');
+        let formData = $form.serialize(); // serialize hidden inputs
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                // Update header cart count
+                if ($('.cart-count').length) {
+                    $('.cart-count').text(response.count);
+                } else {
+                    // If badge doesn’t exist yet, append it
+                    $('.cart-toggle').append(
+                        `<span class="cart-count badge-circle">${response.count}</span>`
+                    );
+                }
+                // Update header subtotal
+                $('.cart-price').text('₦' + response.subtotal);
+                // Change button to "GO TO CART"
+                $form.replaceWith(`
+                    <a href="${window.cartIndexUrl}" class="btn-icon btn-primary btn-add-cart1" style="color: #fff;background:#154821;border-color:#154821;">
+                        <i class="icon-shopping-cart"></i> GO TO CART
+                    </a>
+                `);
+                Swal.fire(
+                    'Added!',
+                    response.message,
+                    'success'
+                );
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                Swal.fire(
+                    'Error',
+                    'Failed to add product to cart.',
+                    'error'
+                );
+            }
+        });
+    });
+
+    //PageSize filter
+    $("#pagesize").on('change', function() {
+        var size = $(this).val();
+        $("#size").val(size);
+        $("#sizeFilterForm").submit();
+    });
+
+    //ordering filter
+    $("#orderby").on('change', function() {
+        var order = $(this).val();
+        $("#order").val(order);
+        $("#sizeFilterForm").submit();
+    });
+
+    //categories filter
+    $("input[name='categories']").on('change', function() {
+        var selectedCategories = [];
+        $("input[name='categories']:checked").each(function() {
+            selectedCategories.push($(this).val());
+        });
+        $("#hidden_categories").val(selectedCategories.join(','));
+        $("#sizeFilterForm").submit();
+    });
+});
+</script>
+@endpush

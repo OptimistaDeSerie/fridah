@@ -41,8 +41,8 @@
                 <h1 class="product-title">{{$product->name}}</h1>
                 <hr class="short-divider">
                 <div class="price-box">
-                    <span class="old-price">{{$currency}} {{$product->regular_price}}</span>
-                    <span class="new-price">{{$currency}} {{$product->sale_price}}</span>
+                    <span class="old-price">{{$currency}} {{ number_format($product->regular_price, 0, '.', ',') }}</span>
+                    <span class="new-price">{{$currency}} {{ number_format($product->sale_price, 0, '.', ',') }}</span>
                 </div>
                 <!-- End .price-box -->
 
@@ -65,20 +65,31 @@
                 </ul>
 
                 <div class="product-action">
-                    @if(Cart::instance('cart')->content()->Where('id',$product->id)->count()>0)
-                        <a href="{{route('cart.index')}}" class="btn btn-primary mb-3">Go to Cart</a>
+                    @php
+                        $inCart = Cart::instance('cart')->content()->where('id', $product->id)->first();
+                    @endphp
+
+                    @if($inCart)
+                        {{-- Already in cart: just show Go to Cart button --}}
+                        <a href="{{ route('cart.index') }}" class="btn btn-primary">Go to Cart</a>
                     @else
-                    <form name="addtocart-form" action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <div class="product-single-qty">
-                            <input class="horizontal-quantity form-control" type="text" name="quantity" value="1" readonly>
-                        </div>
-                        <!-- End .product-single-qty -->
-                        <input type="hidden" name="id" value="{{$product->id}}" />
-                        <input type="hidden" name="name" value="{{$product->name}}" />
-                        <input type="hidden" name="price" value="{{$product->sale_price == '' ? $product->regular_price:$product->sale_price}}" />  
-                        <button type="submit" class="btn btn-dark mr-2" title="Add to Cart">Add to Cart</button>
-                    </form>
+                        {{-- Not in cart: quantity selector + add to cart button --}}
+                        <form class="addtocart-form" action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <div class="product-single-qty">
+                                <input class="horizontal-quantity form-control"
+                                    type="text"
+                                    name="quantity"
+                                    value="1"
+                                    min="1"
+                                    readonly>
+                            </div>
+                            <input type="hidden" name="id" value="{{ $product->id }}" />
+                            <input type="hidden" name="name" value="{{ $product->name }}" />
+                            <input type="hidden" name="price"
+                                value="{{ $product->sale_price ?: $product->regular_price }}" />  
+                            <button type="submit" class="btn btn-primary" title="Add to Cart">Add to Cart</button>
+                        </form>
                     @endif
                 </div>
                 <!-- End .product-action -->
@@ -96,10 +107,6 @@
                         <a href="#" class="social-icon social-mail icon-mail-alt" target="_blank" title="Mail"></a>
                     </div>
                     <!-- End .social-icons -->
-
-                    <a href="wishlist.html" class="btn-icon-wish add-wishlist" title="Add to Wishlist"><i
-                            class="icon-wishlist-2"></i><span>Add to
-                            Wishlist</span></a>
                 </div>
                 <!-- End .product single-share -->
             </div>
@@ -155,3 +162,49 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $(document).on('submit', '.addtocart-form', function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let actionUrl = form.attr('action');
+        let formData = form.serialize();
+        $.ajax({
+            url: actionUrl,
+            type: "POST",
+            data: formData,
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart',
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    // update cart count in header if you have it
+                    $(".cart-count").text(response.count);
+
+                    // update subtotal
+                    $(".cart-subtotal").text(response.subtotal);
+                    
+                    // turn button into "Go to Cart"
+                    form.replaceWith(
+                        `<a href="{{ route('cart.index') }}" class="btn btn-primary">Go to Cart</a>`
+                    );
+                }
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again.'
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush

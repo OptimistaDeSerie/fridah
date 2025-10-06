@@ -178,9 +178,9 @@
 
                                 <span class="cart-subtotal font2 d-none d-sm-inline">Shopping Cart
                                     @if(Cart::instance('cart')->content()->count()>0)
-                                        <span class="cart-price d-block font2">{{$currency}}{{Cart::instance('cart')->subtotal()}}</span>
+                                        <span class="cart-price d-block font2">₦{{Cart::instance('cart')->subtotal()}}</span>
                                     @else
-                                        <span class="cart-price d-block font2">{{$currency}}0.00</span>
+                                        <span class="cart-price d-block font2">₦0.00</span>
                                     @endif
                                 </span>
                             </div>
@@ -1184,7 +1184,8 @@
         <a id="scroll-top" href="#top" title="Top" role="button"><i class="icon-angle-up"></i></a>
 
         <!-- Plugins JS File -->
-        <script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
+        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}" defer></script>
         <script src="{{ asset('assets/js/plugins.min.js') }}" defer></script>
         <script src="{{ asset('assets/js/jquery.appear.min.js') }}" defer></script>

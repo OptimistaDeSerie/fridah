@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\DeliveryFee;
+use App\Models\State;
+use App\Models\Weight;
+use App\Models\Carrier;
+use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Intervention\Image\laravel\Facades\Image;
 use Illuminate\Support\Facades\File;
+use Yajra\DataTables\DataTables;
 
 class AdminController extends Controller
 {
@@ -298,5 +304,278 @@ class AdminController extends Controller
         }           
         $product->delete();
         return redirect()->route('admin.products')->with('status','Product has been deleted successfully !');
+    }
+
+    public function deliveryFees(Request $request){
+        if ($request->ajax()) {
+            $query = DeliveryFee::select('delivery_fees.*')
+                ->join('states', 'delivery_fees.state_id', '=', 'states.id')
+                ->join('carriers', 'delivery_fees.carrier_id', '=', 'carriers.id')
+                ->join('weights', 'delivery_fees.weight_id', '=', 'weights.id')
+                ->with(['state', 'carrier', 'weight']); // Keep for display purposes
+
+            return DataTables::of($query)
+                ->addColumn('state.title', function ($fee) {
+                    return $fee->state->title ?? '';
+                })
+                ->addColumn('carrier.title', function ($fee) {
+                    return $fee->carrier->title ?? '';
+                })
+                ->addColumn('weight.title', function ($fee) {
+                    return $fee->weight->title ?? '';
+                })
+                ->addColumn('price', function ($fee) {
+                    return $fee->price;
+                })
+                ->addColumn('actions', function ($fee) {
+                    return '
+                        <div class="list-icon-function">
+                            <a href="' . route('admin.delivery-fee.edit', ['id' => $fee->id]) . '">
+                                <div class="item edit"><i class="icon-edit-3"></i></div>
+                            </a>
+                            <form action="' . route('admin.delivery-fee.delete', ['id' => $fee->id]) . '" method="POST">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <div class="item text-danger delete"><i class="icon-trash-2"></i></div>
+                            </form>
+                        </div>';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        return view('admin.delivery-fees');
+    }
+
+    public function addDeliveryFee(){
+        $states = State::select('id', 'title')->orderBy('title')->get();
+        $carriers = Carrier::select('id', 'title')->orderBy('title')->get();
+        $weights = Weight::select('id', 'title')->orderBy('title')->get();
+        return view('admin.delivery-fee-add', compact('states', 'carriers', 'weights'));
+    }
+
+    public function saveDeliveryFee(Request $request){
+        $request->validate([
+            'state_id' => 'required|exists:states,id',
+            'carrier_id' => 'required|exists:carriers,id',
+            'weight_id' => 'required|exists:weights,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        DeliveryFee::create([
+            'state_id' => $request->state_id,
+            'carrier_id' => $request->carrier_id,
+            'weight_id' => $request->weight_id,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->route('admin.delivery-fees')->with('success', 'Delivery fee added successfully.');
+    }
+
+    public function editDeliveryFee($id){
+        $fee = DeliveryFee::findOrFail($id);
+        $states = State::select('id', 'title')->orderBy('title')->get();
+        $carriers = Carrier::select('id', 'title')->orderBy('title')->get();
+        $weights = Weight::select('id', 'title')->orderBy('title')->get();
+
+        return view('admin.delivery-fee-edit', compact('fee', 'states', 'carriers', 'weights'));
+    }
+
+    public function updateDeliveryFee(Request $request){
+        $request->validate([
+            'state_id' => 'required|exists:states,id',
+            'carrier_id' => 'required|exists:carriers,id',
+            'weight_id' => 'required|exists:weights,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $fee = DeliveryFee::findOrFail($request->id);
+        $fee->update([
+            'state_id' => $request->state_id,
+            'carrier_id' => $request->carrier_id,
+            'weight_id' => $request->weight_id,
+            'price' => $request->price,
+        ]);
+        return redirect()->route('admin.delivery-fees')->with('success', 'Delivery fee updated successfully.');
+    }
+
+    public function deleteDeliveryFee($id){
+        $fee = DeliveryFee::findOrFail($id);
+        $fee->delete();
+        return redirect()->route('admin.delivery-fees')->with('success', 'Delivery fee deleted successfully.');
+    }
+
+    public function carriers(Request $request){
+        if ($request->ajax()) {
+            $query = Carrier::select('carriers.*');
+            return DataTables::of($query)
+                ->addColumn('actions', function ($carrier) {
+                    return '
+                        <div class="list-icon-function">
+                            <a href="' . route('admin.carrier.edit', ['id' => $carrier->id]) . '">
+                                <div class="item edit"><i class="icon-edit-3"></i></div>
+                            </a>
+                            <form action="' . route('admin.carrier.delete', ['id' => $carrier->id]) . '" method="POST">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <div class="item text-danger delete"><i class="icon-trash-2"></i></div>
+                            </form>
+                        </div>';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+        return view('admin.carriers');
+    }
+
+    public function addCarrier(){
+        return view('admin.carrier-add');
+    }
+
+    public function saveCarrier(Request $request){
+        $request->validate([
+            'title' => 'required|string|max:100',
+        ]);
+
+        Carrier::create([
+            'title' => $request->title,
+        ]);
+
+        return redirect()->route('admin.carriers')->with('success', 'Carrier added successfully.');
+    }
+
+    public function editCarrier($id){
+        $carrier = Carrier::findOrFail($id);
+        return view('admin.carrier-edit', compact('carrier'));
+    }
+
+    public function updateCarrier(Request $request){
+        $request->validate([
+            'title' => 'required|string|max:100',
+        ]);
+
+        $carrier = Carrier::findOrFail($request->id);
+        $carrier->update([
+            'title' => $request->title,
+        ]);
+
+        return redirect()->route('admin.carriers')->with('success', 'Carrier updated successfully.');
+    }
+
+    public function deleteCarrier($id){
+        $carrier = Carrier::findOrFail($id);
+        $carrier->delete();
+        return redirect()->route('admin.carriers')->with('success', 'Carrier deleted successfully.');
+    }
+
+    public function weights(Request $request){
+        if ($request->ajax()) {
+            $query = Weight::select('weights.*');
+            return DataTables::of($query)
+                ->addColumn('actions', function ($weight) {
+                    return '
+                        <div class="list-icon-function">
+                            <a href="' . route('admin.weight.edit', ['id' => $weight->id]) . '">
+                                <div class="item edit"><i class="icon-edit-3"></i></div>
+                            </a>
+                            <form action="' . route('admin.weight.delete', ['id' => $weight->id]) . '" method="POST">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <div class="item text-danger delete"><i class="icon-trash-2"></i></div>
+                            </form>
+                        </div>';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+        return view('admin.weights');
+    }
+
+    public function addWeight(){
+        return view('admin.weight-add');
+    }
+
+    public function saveWeight(Request $request){
+        $request->validate([
+            'title' => 'required|string|max:100',
+        ]);
+
+        Weight::create([
+            'title' => $request->title,
+        ]);
+
+        return redirect()->route('admin.weights')->with('success', 'Weight added successfully.');
+    }
+
+    public function editWeight($id){
+        $weight = Weight::findOrFail($id);
+        return view('admin.weight-edit', compact('weight'));
+    }
+
+    public function updateWeight(Request $request){
+        $request->validate([
+            'title' => 'required|string|max:100',
+        ]);
+
+        $weight = Weight::findOrFail($request->id);
+        $weight->update([
+            'title' => $request->title,
+        ]);
+
+        return redirect()->route('admin.weights')->with('success', 'Weight updated successfully.');
+    }
+
+    public function deleteWeight($id){
+        $weight = Weight::findOrFail($id);
+        $weight->delete();
+        return redirect()->route('admin.weights')->with('success', 'Weight deleted successfully.');
+    }
+
+    public function orders(Request $request){
+        if ($request->ajax()) {
+            $query = Order::select('orders.*', 'users.firstname', 'users.lastname', 'users.phone')
+                ->join('users', 'orders.user_id', '=', 'users.id')
+                ->orderByDesc('orders.created_at');
+            return DataTables::of($query)
+                ->addColumn('user', function ($order) {
+                    return $order->firstname . ' ' . $order->lastname;
+                })
+                ->filterColumn('user', function($query, $keyword) {
+                    $sql = "CONCAT(users.firstname, ' ', users.lastname) LIKE ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->addColumn('phone', function ($order) {
+                    return $order->phone;
+                })
+                ->addColumn('subtotal', function ($order) {
+                    return '₦' . number_format($order->subtotal, 2);
+                })
+                ->addColumn('total', function ($order) {
+                    return '₦' . number_format($order->total, 2);
+                })
+                ->addColumn('status', function ($order) {
+                    return ucfirst($order->status);
+                })
+                ->addColumn('order_date', function ($order) {
+                    return $order->created_at->format('d M, Y H:i');
+                })
+                ->addColumn('total_items', function ($order) {
+                    return $order->orderItems()->count();
+                })
+                ->addColumn('delivered_on', function ($order) {
+                    return $order->delivered_date ? $order->delivered_date->format('d M, Y') : '-';
+                })
+                ->addColumn('actions', function ($order) {
+                    return '
+                        <div class="list-icon-function">
+                            <a href="">
+                                <div class="item edit"><i class="icon-eye"></i></div>
+                            </a>
+                        </div>';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+        return view('admin.orders');
     }
 }

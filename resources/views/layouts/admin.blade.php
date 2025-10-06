@@ -97,16 +97,16 @@
                                                 <div class="text">Category</div>
                                         </a>
                                         <ul class="sub-menu">
-                                                <li class="sub-menu-item">
-                                                        <a href="{{route('admin.category.add')}}" class="">
-                                                        <div class="text">New Category</div>
-                                                        </a>
-                                                </li>
-                                                <li class="sub-menu-item">
-                                                        <a href="{{route('admin.categories')}}" class="">
-                                                        <div class="text">Categories</div>
-                                                        </a>
-                                                </li>
+                                            <li class="sub-menu-item">
+                                                    <a href="{{route('admin.category.add')}}" class="">
+                                                    <div class="text">New Category</div>
+                                                    </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                    <a href="{{route('admin.categories')}}" class="">
+                                                    <div class="text">Categories</div>
+                                                    </a>
+                                            </li>
                                         </ul>
                                     </li>
                                     <li class="menu-item has-children">
@@ -116,13 +116,36 @@
                                         </a>
                                         <ul class="sub-menu">
                                             <li class="sub-menu-item">
-                                                <a href="orders.html" class="">
+                                                <a href="{{route('admin.orders')}}" class="">
                                                     <div class="text">Orders</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
                                                 <a href="order-tracking.html" class="">
                                                     <div class="text">Order tracking</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
+                                            <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                            <div class="text">Delivery</div>
+                                        </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.delivery-fees') }}" class="">
+                                                    <div class="text">Delivery Fee</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.carriers') }}" class="">
+                                                    <div class="text">Carriers</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.weights') }}" class="">
+                                                    <div class="text">Weight</div>
                                                 </a>
                                             </li>
                                         </ul>
@@ -158,7 +181,6 @@
                         </div>
                     </div>
                     <div class="section-content-right">
-
                         <div class="header-dashboard">
                             <div class="wrap">
                                 <div class="header-left">
@@ -170,8 +192,6 @@
                                     <div class="button-show-hide">
                                         <i class="icon-menu-left"></i>
                                     </div>
-
-
                                     <form class="form-search flex-grow">
                                         <fieldset class="name">
                                             <input type="text" placeholder="Search here..." class="show-search" name="name"
