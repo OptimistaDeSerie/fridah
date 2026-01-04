@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('main-content')
 <!-- DataTables CSS -->
-<link rel="stylesheet" href="{{ asset('assets/css/dataTables.dataTables.min.css') }}">
 <style>
     .table-striped th:nth-child(1), .table-striped td:nth-child(1) {
         width: 100px;   
@@ -54,8 +53,6 @@
 
 @push('scripts')
 <!-- DataTables JS -->
-<script src="{{ asset('assets/js/dataTables.min.js') }}"></script>
-<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 <script>
 $(document).ready(function() {
     var table = $('#carriersTable').DataTable({

@@ -7,31 +7,29 @@
         <div class="row">
             <div class="col-lg-9">
                 <div class="boxed-slider owl-carousel owl-carousel-lazy owl-theme owl-theme-light">
-                    <div class="boxed-slide boxed-slide-1">
+                    @foreach(\App\Models\ShopBanner::where('status', true)->orderBy('sort_order')->get() as $banner)
+                    <div class="boxed-slide">
                         <figure>
-                            <img loading="lazy" class="slide-bg owl-lazy" data-src="{{asset('assets/images/banners/banner-fashion-1.jpg')}}" src="{{asset('assets/images/banners/banner-fashion-1.jpg')}}" alt="banner" width="870" height="300">
+                            <img loading="lazy"
+                                class="slide-bg owl-lazy"
+                                data-src="{{ asset('backend/uploads/shop-banners/' . $banner->image) }}"
+                                src="{{ asset('backend/uploads/shop-banners/' . $banner->image) }}"
+                                alt="{{ $banner->title ?? 'Shop Banner' }}"
+                                width="870" height="300">
                         </figure>
                         <div class="slide-content">
-                            <h4>Fashion</h4>
-                            <h5>mega sale</h5>
-                            <span>extra</span>
-                            <b>60<i>%</i> OFF</b>
-                            <p>On order above $555</p>
+                            @if($banner->line_1)<h4>{{ $banner->line_1 }}</h4>@endif
+                            @if($banner->line_2)<h5>{{ $banner->line_2 }}</h5>@endif
+                            @if($banner->line_3)<span>{{ $banner->line_3 }}</span>@endif
+                            @if($banner->line_4)<b>{!! $banner->line_4 !!}</b>@endif
+                            @if($banner->line_5)<p>{{ $banner->line_5 }}</p>@endif
+                            @if($banner->button_text && $banner->button_link)
+                                <a href="{{ $banner->button_link }}" class="btn btn-sm btn-dark">{{ $banner->button_text }}</a>
+                            @endif
                         </div>
                     </div>
-
-                    <div class="boxed-slide boxed-slide-2">
-                        <figure>
-                            <img loading="lazy" class="slide-bg owl-lazy" data-src="{{asset('assets/images/banners/banner-fashion-2.jpg')}}" src="{{asset('assets/images/banners/banner-fashion-2.jpg')}}" alt="banner" width="870" height="300">
-                        </figure>
-                        <div class="slide-content">
-                            <h5>Check out over <span>200</span><i>+</i></h5>
-                            <h4>Men's jackets & coats</h4>
-                            <a href="#" class="btn btn-sm btn-dark">SHOP NOW</a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-
                 <nav class="toolbox sticky-header mt-2" data-sticky-options="{'mobile': true}">
                     <div class="toolbox-left">
                         <a href="#" class="sidebar-toggle"><svg data-name="Layer 3" id="Layer_3"
@@ -200,186 +198,6 @@
                         <!-- End .collapse -->
                     </div>
                     <!-- End .widget -->
-                    <div class="widget widget-featured">
-                        <h3 class="widget-title">Featured</h3>
-
-                        <div class="widget-body">
-                            <div class="owl-carousel widget-featured-products">
-                                <div class="featured-col">
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-4.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-4-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Blue Backpack for
-                                                    the Young - S</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-5.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-5-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Casual Spring Blue
-                                                    Shoes</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-6.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-6-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Men Black Gentle
-                                                    Belt</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                </div>
-                                <!-- End .featured-col -->
-
-                                <div class="featured-col">
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-1.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-1-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Ultimate 3D
-                                                    Bluetooth Speaker</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-2.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-2-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Brown Women Casual
-                                                    HandBag</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                    <div class="product-default left-details product-widget">
-                                        <figure>
-                                            <a href="product.html">
-                                                <img src="assets/images/products/small/product-3.jpg" width="75" height="75" alt="product" />
-                                                <img src="assets/images/products/small/product-3-2.jpg" width="75" height="75" alt="product" />
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <h3 class="product-title"> <a href="product.html">Circled Ultimate
-                                                    3D Speaker</a> </h3>
-                                            <div class="ratings-container">
-                                                <div class="product-ratings">
-                                                    <span class="ratings" style="width:100%"></span>
-                                                    <!-- End .ratings -->
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <!-- End .product-ratings -->
-                                            </div>
-                                            <!-- End .product-container -->
-                                            <div class="price-box">
-                                                <span class="product-price">$49.00</span>
-                                            </div>
-                                            <!-- End .price-box -->
-                                        </div>
-                                        <!-- End .product-details -->
-                                    </div>
-                                </div>
-                                <!-- End .featured-col -->
-                            </div>
-                            <!-- End .widget-featured-slider -->
-                        </div>
-                        <!-- End .widget-body -->
-                    </div>
-                    <!-- End .widget -->
-
-                    <div class="widget widget-block">
-                        <h3 class="widget-title">Custom HTML Block</h3>
-                        <h5>This is a custom sub-title.</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non placerat mi. Etiam non tellus </p>
-                    </div>
                     <!-- End .widget -->
                 </div>
                 <!-- End .sidebar-wrapper -->

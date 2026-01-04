@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 @section('main-content')
-<link rel="stylesheet" href="{{ asset('assets/css/dataTables.dataTables.min.css') }}">
 <style>
 /*     .table-striped th:nth-child(1), .table-striped td:nth-child(1) {
         width: 100px;   
@@ -40,6 +39,9 @@
                 @if(Session::has('success'))
                     <p class="alert alert-success">{{ Session::get('success') }}</p>
                 @endif
+                @if(Session::has('status'))
+                    <p class='alert alert-success'>{{Session::get('status')}}</p>
+                @endif
                 <table id="ordersTable" class="table table-striped table-bordered table-responsive">
                     <thead>
                         <tr>
@@ -50,7 +52,7 @@
                             <th>Status</th>
                             <th>Order Date</th>
                             <th class="align-left">Total Items</th>
-                            <th>Delivered On</th>
+                            <th>Order No</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -63,8 +65,6 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('assets/js/dataTables.min.js') }}"></script>
-<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         var table = $('#ordersTable').DataTable({
@@ -82,7 +82,7 @@
                 { data: 'status', name: 'orders.status' },
                 { data: 'order_date', name: 'orders.created_at' },
                 { data: 'total_items', orderable: false, searchable: true },
-                { data: 'delivered_on', name: 'orders.delivered_date' },
+                { data: 'order_no', name: 'orders.order_no' },
                 { data: 'actions', orderable: false, searchable: false }
             ],
             pageLength: 10,

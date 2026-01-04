@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\State;
+use App\Models\DeliveryFee;
 
 class RegisteredUserController extends Controller
 {
@@ -46,13 +48,17 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // 🔹 Dynamically get the first available State and DeliveryFee
+        $firstState = State::first();           // Gets the first state in the table
+        $firstDeliveryFee = DeliveryFee::first(); // Gets the first delivery fee record
         // 🔹 create a default address row for this user
-        $address = Address::create([
-            'user_id' => $user->id,
-            'state_id' => null,
-            'address' => null,
-            'type' => null,
-            'isdefault' => 1,
+        Address::create([
+            'user_id'         => $user->id,
+            'state_id'        => $firstState?->id,          // Safe: null if no states exist
+            'delivery_fee_id' => $firstDeliveryFee?->id,    // Safe: null if no delivery fees exist
+            'address'         => '',                        // Empty string instead of null (better for display)
+            'type'            => 'home',
+            'isdefault'       => 1,
         ]);
 
         event(new Registered($user));

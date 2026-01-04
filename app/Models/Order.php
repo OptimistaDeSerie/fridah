@@ -17,4 +17,10 @@ class Order extends Model
     public function transaction(){
         return $this->hasOne(Transaction::class);
     }
+    /* 'user_id' (2nd argument) → foreign key in the addresses table.
+    'user_id' (3rd argument) → local key in the orders table */
+    public function defaultAddress(){
+        return $this->hasOne(Address::class, 'user_id', 'user_id')
+                    ->where('isdefault', 1);
+    }
 }

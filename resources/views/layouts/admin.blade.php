@@ -22,6 +22,7 @@
         <link rel="apple-touch-icon-precomposed" href="{{ asset('backend/images/favicon.ico') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('backend/css/sweetalert.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('backend/css/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/dataTables.dataTables.min.css') }}">
         <script>
             WebFontConfig = {
                 google: {
@@ -51,7 +52,7 @@
 
                     <div class="section-menu-left">
                         <div class="box-logo">
-                            <a href="index.html" id="site-logo-inner">
+                            <a href="{{route('admin.index')}}" id="site-logo-inner">
                                 <img class="" id="logo_header" alt="" src="{{ asset('backend/images/logo/logo.png') }}"
                                     data-light="{{ asset('backend/images/logo/logo.png') }}" data-dark="{{ asset('images/logo/logo.png') }}">
                             </a>
@@ -64,7 +65,15 @@
                                 <div class="center-heading">Main Home</div>
                                 <ul class="menu-list">
                                     <li class="menu-item">
-                                        <a href="index.html" class="">
+                                        <a href="{{route('index')}}" class="">
+                                            <div class="icon"><i class="icon-grid"></i></div>
+                                            <div class="text">Main Website</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="menu-list">
+                                    <li class="menu-item">
+                                        <a href="{{route('admin.index')}}" class="">
                                             <div class="icon"><i class="icon-grid"></i></div>
                                             <div class="text">Dashboard</div>
                                         </a>
@@ -121,7 +130,7 @@
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="order-tracking.html" class="">
+                                                <a href="#" class="">
                                                     <div class="text">Order tracking</div>
                                                 </a>
                                             </li>
@@ -150,30 +159,40 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li class="menu-item">
-                                        <a href="slider.html" class="">
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-image"></i></div>
                                             <div class="text">Slider</div>
                                         </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.sliders') }}" class="">
+                                                    <div class="text">Main Home Slider</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.popular.categories') }}" class="">
+                                                    <div class="text">Popular Categories Slider</div>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="coupons.html" class="">
-                                            <div class="icon"><i class="icon-grid"></i></div>
-                                            <div class="text">Coupns</div>
+                                        <a href="{{ route('admin.hot.deals') }}" class="">
+                                            <div class="icon"><i class="icon-trending-up"></i></div>
+                                            <div class="text">Hot Deals</div>
                                         </a>
                                     </li>
-
                                     <li class="menu-item">
-                                        <a href="users.html" class="">
-                                            <div class="icon"><i class="icon-user"></i></div>
-                                            <div class="text">User</div>
+                                        <a href="{{ route('admin.banners') }}" class="">
+                                            <div class="icon"><i class="icon-image"></i></div>
+                                            <div class="text">Home Banner</div>
                                         </a>
                                     </li>
-
                                     <li class="menu-item">
-                                        <a href="settings.html" class="">
-                                            <div class="icon"><i class="icon-settings"></i></div>
-                                            <div class="text">Settings</div>
+                                        <a href="{{ route('admin.shop_banners') }}" class="">
+                                            <div class="icon"><i class="icon-image"></i></div>
+                                            <div class="text">Product Page Banner</div>
                                         </a>
                                     </li>
                                 </ul>
@@ -324,75 +343,55 @@
                                 <div class="header-grid">
 
                                     <div class="popup-wrap message type-header">
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button"
-                                                id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <span class="header-item">
-                                                    <span class="text-tiny">1</span>
-                                                    <i class="icon-bell"></i>
-                                                </span>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end has-content"
-                                                aria-labelledby="dropdownMenuButton2">
-                                                <li>
-                                                    <h6>Notifications</h6>
-                                                </li>
-                                                <li>
-                                                    <div class="message-item item-1">
-                                                        <div class="image">
-                                                            <i class="icon-noti-1"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div class="body-title-2">Discount available</div>
-                                                            <div class="text-tiny">Morbi sapien massa, ultricies at rhoncus
-                                                                at, ullamcorper nec diam</div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="message-item item-2">
-                                                        <div class="image">
-                                                            <i class="icon-noti-2"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div class="body-title-2">Account has been verified</div>
-                                                            <div class="text-tiny">Mauris libero ex, iaculis vitae rhoncus
-                                                                et</div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="message-item item-3">
-                                                        <div class="image">
-                                                            <i class="icon-noti-3"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div class="body-title-2">Order shipped successfully</div>
-                                                            <div class="text-tiny">Integer aliquam eros nec sollicitudin
-                                                                sollicitudin</div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="message-item item-4">
-                                                        <div class="image">
-                                                            <i class="icon-noti-4"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div class="body-title-2">Order pending: <span>ID 305830</span>
-                                                            </div>
-                                                            <div class="text-tiny">Ultricies at rhoncus at ullamcorper</div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li><a href="#" class="tf-button w-full">View all</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button"
+            id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="header-item">
+                @if($recentOrders->count() > 0)
+                    <span class="text-tiny">{{ $recentOrders->count() }}</span>
+                @endif
+                <i class="icon-bell"></i>
+            </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton2">
+            <li><h6>Recent Orders</h6></li>
 
+            @forelse($recentOrders as $order)
+                <li>
+                    <div class="message-item">
+                        <div class="image">
+                            <i class="icon-shopping-bag"></i>
+                        </div>
+                        <a href="{{ route('admin.order.item', ['id' => $order->id]) }}">
+                            <div>
+                                <div class="body-title-2">
+                                    Order <strong>#{{ $order->order_no }}</strong>
+                                </div>
+                                <div class="text-tiny">
+                                    ₦{{ number_format($order->total, 2) }} • 
+                                    {{ $order->created_at->format('M d, Y') }}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+            @empty
+                <li>
+                    <div class="message-item text-center py-3">
+                        <div class="text-tiny">No recent orders</div>
+                    </div>
+                </li>
+            @endforelse
 
-
-
+            <li>
+                <a href="{{ route('admin.orders') }}" class="tf-button w-full">
+                    View all orders
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+                                    @if(Auth::user()->user_type == 'admin')
                                     <div class="popup-wrap user type-header">
                                         <div class="dropdown">
                                             <button class="btn btn-secondary dropdown-toggle" type="button"
@@ -402,46 +401,13 @@
                                                         <img src="{{ asset('backend/images/avatar/user-1.png') }}" alt="">
                                                     </span>
                                                     <span class="flex flex-column">
-                                                        <span class="body-title mb-2">Kristin Watson</span>
+                                                        <span class="body-title mb-2">{{ Auth::user()->firstname }}</span>
                                                         <span class="text-tiny">Admin</span>
                                                     </span>
                                                 </span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end has-content"
                                                 aria-labelledby="dropdownMenuButton3">
-                                                <li>
-                                                    <a href="#" class="user-item">
-                                                        <div class="icon">
-                                                            <i class="icon-user"></i>
-                                                        </div>
-                                                        <div class="body-title-2">Account</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" class="user-item">
-                                                        <div class="icon">
-                                                            <i class="icon-mail"></i>
-                                                        </div>
-                                                        <div class="body-title-2">Inbox</div>
-                                                        <div class="number">27</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" class="user-item">
-                                                        <div class="icon">
-                                                            <i class="icon-file-text"></i>
-                                                        </div>
-                                                        <div class="body-title-2">Taskboard</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" class="user-item">
-                                                        <div class="icon">
-                                                            <i class="icon-headphones"></i>
-                                                        </div>
-                                                        <div class="body-title-2">Support</div>
-                                                    </a>
-                                                </li>
                                                 <li>
                                                     <form method="POST" action="{{ route('logout') }}">
                                                         @csrf
@@ -457,6 +423,7 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -478,104 +445,8 @@
         <script src="{{ asset('backend/js/sweetalert.min.js') }}"></script>
         <script src="{{ asset('backend/js/apexcharts/apexcharts.js') }}"></script>
         <script src="{{ asset('backend/js/main.js') }}"></script>
-        <script>
-            (function ($) {
-
-                var tfLineChart = (function () {
-
-                    var chartBar = function () {
-
-                        var options = {
-                            series: [{
-                                name: 'Total',
-                                data: [0.00, 0.00, 0.00, 0.00, 0.00, 273.22, 208.12, 0.00, 0.00, 0.00, 0.00, 0.00]
-                            }, {
-                                name: 'Pending',
-                                data: [0.00, 0.00, 0.00, 0.00, 0.00, 273.22, 208.12, 0.00, 0.00, 0.00, 0.00, 0.00]
-                            },
-                            {
-                                name: 'Delivered',
-                                data: [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
-                            }, {
-                                name: 'Canceled',
-                                data: [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
-                            }],
-                            chart: {
-                                type: 'bar',
-                                height: 325,
-                                toolbar: {
-                                    show: false,
-                                },
-                            },
-                            plotOptions: {
-                                bar: {
-                                    horizontal: false,
-                                    columnWidth: '10px',
-                                    endingShape: 'rounded'
-                                },
-                            },
-                            dataLabels: {
-                                enabled: false
-                            },
-                            legend: {
-                                show: false,
-                            },
-                            colors: ['#2377FC', '#FFA500', '#078407', '#FF0000'],
-                            stroke: {
-                                show: false,
-                            },
-                            xaxis: {
-                                labels: {
-                                    style: {
-                                        colors: '#212529',
-                                    },
-                                },
-                                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                            },
-                            yaxis: {
-                                show: false,
-                            },
-                            fill: {
-                                opacity: 1
-                            },
-                            tooltip: {
-                                y: {
-                                    formatter: function (val) {
-                                        return "$ " + val + ""
-                                    }
-                                }
-                            }
-                        };
-
-                        chart = new ApexCharts(
-                            document.querySelector("#line-chart-8"),
-                            options
-                        );
-                        if ($("#line-chart-8").length > 0) {
-                            chart.render();
-                        }
-                    };
-
-                    /* Function ============ */
-                    return {
-                        init: function () { },
-
-                        load: function () {
-                            chartBar();
-                        },
-                        resize: function () { },
-                    };
-                })();
-
-                jQuery(document).ready(function () { });
-
-                jQuery(window).on("load", function () {
-                    tfLineChart.load();
-                });
-
-                jQuery(window).on("resize", function () { });
-            })(jQuery);
-        </script>
+        <script src="{{ asset('assets/js/dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
         @stack("scripts")
     </body>
 </html>

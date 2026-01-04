@@ -205,6 +205,7 @@ class CartController extends Controller
                 // ✅ Finalize order totals
                 $order->subtotal = $subtotal;
                 $order->total = $subtotal + $deliveryFeePrice;
+                $order->order_no = '1' . str_pad($order->id, 6, '0', STR_PAD_LEFT);
                 $order->save();
 
                 // ✅ Create transaction

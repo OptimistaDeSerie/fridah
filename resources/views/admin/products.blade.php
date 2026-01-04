@@ -1,13 +1,5 @@
 @extends('layouts.admin')
 @section('main-content')
-<style>
-    .table-striped  th:nth-child(1), .table-striped  td:nth-child(1) {
-        width: 100px;   
-    }
-    .table-striped  th:nth-child(2), .table-striped  td:nth-child(2) {
-        width: 250px;   
-    }
-</style>
 <div class="main-content-inner">                            
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
@@ -45,10 +37,9 @@
                 @if(Session::has('success'))
                     <p class="alert alert-success">{{ Session::get('success') }}</p>
                 @endif
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive" id="products-table">
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th>Name</th>
                             <th>Price</th>
                             <th>SalePrice</th>
@@ -63,7 +54,6 @@
                     <tbody>
                         @foreach ($products as $product)
                         <tr>
-                            <td>{{$product->id}}</td>
                             <td class="pname">
                                 <div class="image">
                                     <img src="{{asset('backend/uploads/products/thumbnails')}}/{{$product->image}}" alt="" class="image">
@@ -112,6 +102,22 @@
 @endsection
 @push('scripts')
     <script>
+    $('#products-table').DataTable({
+        paging: true,
+        searching: true,
+        info: true,
+        lengthChange: true, // hides "Show entries" dropdown if you want
+        language: {
+            search: "Search:",
+            paginate: {
+                previous: "<i class='icon-chevron-left'></i>",
+                next: "<i class='icon-chevron-right'></i>"
+            }
+        }
+    });
+    $('.dt-input').addClass('float-start mb-3').css({
+        'margin-right': '100px',
+    });
         $(function(){
             $(".delete").on('click',function(e){
                 e.preventDefault();

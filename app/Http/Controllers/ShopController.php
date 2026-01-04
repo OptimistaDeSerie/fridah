@@ -54,7 +54,24 @@ class ShopController extends Controller
         if (!empty($min_price) && !empty($max_price)) {
             $products->whereBetween('sale_price', [$min_price, $max_price]);
         }
-        $products = $products->paginate($size);
+
+        // ✅ search field from header
+        $search_term = $request->query('q');
+        $search_category = $request->query('cat');
+        // Search by text
+        if ($search_term) {
+            $products->where(function ($query) use ($search_term) {
+                $query->where('name', 'LIKE', "%{$search_term}%")
+                    ->orWhere('short_description', 'LIKE', "%{$search_term}%")
+                    ->orWhere('description', 'LIKE', "%{$search_term}%");
+            });
+        }
+        // Filter by category
+        if ($search_category) {
+            $products->where('category_id', $search_category);
+        }
+
+        $products = $products->paginate($size)->withQueryString();
         $currency = "₦";
         return view('shop',compact("products","currency","categories","size", "orderby", "filter_categories", "min_price", "max_price"));
     }

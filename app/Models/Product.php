@@ -12,4 +12,12 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function hotDeal(){
+        return $this->hasOne(HotDealProduct::class);
+    }
+
+    public function orderItems(){
+        return $this->hasMany(OrderItem::class);
+    }
 }

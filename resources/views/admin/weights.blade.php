@@ -1,15 +1,6 @@
 @extends('layouts.admin')
 @section('main-content')
 <!-- DataTables CSS -->
-<link rel="stylesheet" href="{{ asset('assets/css/dataTables.dataTables.min.css') }}">
-<style>
-    .table-striped th:nth-child(1), .table-striped td:nth-child(1) {
-        width: 100px;   
-    }
-    .table-striped th:nth-child(2), .table-striped td:nth-child(2) {
-        width: 250px;   
-    }
-</style>
 <div class="main-content-inner">                            
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
@@ -45,9 +36,6 @@
 @endsection
 
 @push('scripts')
-<!-- DataTables JS -->
-<script src="{{ asset('assets/js/dataTables.min.js') }}"></script>
-<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 <script>
 $(document).ready(function() {
     var table = $('#weightsTable').DataTable({
