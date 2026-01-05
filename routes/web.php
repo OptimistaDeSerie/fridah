@@ -29,9 +29,13 @@ use Illuminate\Support\Facades\Route;
     Route::delete('/cart/remove/{rowId}',[CartController::class,'remove_item_from_cart'])->name('cart.remove');
     Route::delete('/cart/clear',[CartController::class,'empty_cart'])->name('cart.empty');
     Route::get('/checkout',[CartController::class,'checkout'])->name('cart.checkout');
-    Route::post('/place-an-order',[CartController::class,'place_an_order'])->name('cart.place.an.order');
+    #Route::post('/place-an-order',[CartController::class,'place_an_order'])->name('cart.place.an.order');
     Route::get('/order-confirmation/{order}', [CartController::class, 'order_confirmation'])->name('cart.order.confirmation');
     Route::get('/cart/delivery-fee', [CartController::class, 'get_delivery_fee'])->name('cart.delivery.fee');
+    //Paystack Payment Routes
+    Route::post('/place-an-order', [CartController::class, 'place_an_order'])->name('cart.place.an.order');
+    Route::get('/payment/callback', [CartController::class, 'payment_callback'])->name('payment.callback');
+    Route::post('/paystack/webhook', [CartController::class, 'paystack_webhook'])->name('paystack.webhook');
 
 /* When authenticated user clicks the dynamic profile link (their name) */
 Route::middleware('auth')->group(function () {
@@ -39,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/account-orders',[UserController::class,'orders'])->name('user.orders');
     Route::get('/account-order-details/{order_id}',[UserController::class,'order_details'])->name('user.order.details');
     Route::put('/account-order/cancel-order',[UserController::class,'cancel_order'])->name('user.cancel_order');
+    Route::get('/account-orders/addresses',[UserController::class,'addresses'])->name('user.addresses');
+    Route::patch('/account-orders/{address}/set-default-address', [UserController::class, 'set_default_address'])->name('user.set_default_address');
 });
 Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');

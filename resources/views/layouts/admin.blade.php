@@ -341,56 +341,55 @@
 
                                 </div>
                                 <div class="header-grid">
-
                                     <div class="popup-wrap message type-header">
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button"
-            id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="header-item">
-                @if($recentOrders->count() > 0)
-                    <span class="text-tiny">{{ $recentOrders->count() }}</span>
-                @endif
-                <i class="icon-bell"></i>
-            </span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton2">
-            <li><h6>Recent Orders</h6></li>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="header-item">
+                                                    @if($recentOrders->count() > 0)
+                                                        <span class="text-tiny">{{ $recentOrders->count() }}</span>
+                                                    @endif
+                                                    <i class="icon-bell"></i>
+                                                </span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton2">
+                                                <li><h6>Recent Orders</h6></li>
 
-            @forelse($recentOrders as $order)
-                <li>
-                    <div class="message-item">
-                        <div class="image">
-                            <i class="icon-shopping-bag"></i>
-                        </div>
-                        <a href="{{ route('admin.order.item', ['id' => $order->id]) }}">
-                            <div>
-                                <div class="body-title-2">
-                                    Order <strong>#{{ $order->order_no }}</strong>
-                                </div>
-                                <div class="text-tiny">
-                                    ₦{{ number_format($order->total, 2) }} • 
-                                    {{ $order->created_at->format('M d, Y') }}
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-            @empty
-                <li>
-                    <div class="message-item text-center py-3">
-                        <div class="text-tiny">No recent orders</div>
-                    </div>
-                </li>
-            @endforelse
+                                                @forelse($recentOrders as $order)
+                                                    <li>
+                                                        <div class="message-item">
+                                                            <div class="image">
+                                                                <i class="icon-shopping-bag"></i>
+                                                            </div>
+                                                            <a href="{{ route('admin.order.item', ['id' => $order->id]) }}">
+                                                                <div>
+                                                                    <div class="body-title-2">
+                                                                        Order <strong>#{{ $order->order_no }}</strong>
+                                                                    </div>
+                                                                    <div class="text-tiny">
+                                                                        ₦{{ number_format($order->total, 2) }} • 
+                                                                        {{ $order->created_at->format('M d, Y') }}
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <div class="message-item text-center py-3">
+                                                            <div class="text-tiny">No recent orders</div>
+                                                        </div>
+                                                    </li>
+                                                @endforelse
 
-            <li>
-                <a href="{{ route('admin.orders') }}" class="tf-button w-full">
-                    View all orders
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
+                                                <li>
+                                                    <a href="{{ route('admin.orders') }}" class="tf-button w-full">
+                                                        View all orders
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     @if(Auth::user()->user_type == 'admin')
                                     <div class="popup-wrap user type-header">
                                         <div class="dropdown">
@@ -446,7 +445,6 @@
         <script src="{{ asset('backend/js/apexcharts/apexcharts.js') }}"></script>
         <script src="{{ asset('backend/js/main.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.min.js') }}"></script>
-        <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
         @stack("scripts")
     </body>
 </html>

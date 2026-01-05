@@ -6,6 +6,21 @@
         </nav>
         <div class="row">
             <div class="col-lg-9">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
                 <div class="boxed-slider owl-carousel owl-carousel-lazy owl-theme owl-theme-light">
                     @foreach(\App\Models\ShopBanner::where('status', true)->orderBy('sort_order')->get() as $banner)
                     <div class="boxed-slide">
@@ -189,7 +204,7 @@
                                                 <span id="filter-price-range"></span>
                                             </div>
                                             <!-- End .filter-price-text -->
-                                            <a href="{{ route('shop.index') }}" class="btn btn-primary font2">Reset</a>
+                                            <a href="{{ route('shop.index') }}" class="btn btn-primary btn-add-cart1 font2">Reset</a>
                                         </div>
                                         <!-- End .filter-price-action -->
                                     </div>
@@ -228,49 +243,66 @@
     var backendMaxPrice = {{ $max_price }};
     window.cartIndexUrl = "{{ route('cart.index') }}";
     $(function() {
-    $(document).on('submit', 'form[name="addtocart-form"]', function(e) {
-        e.preventDefault();
-        let $form = $(this);
-        let url = $form.attr('action');
-        let formData = $form.serialize(); // serialize hidden inputs
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            success: function(response) {
-                // Update header cart count
-                if ($('.cart-count').length) {
-                    $('.cart-count').text(response.count);
-                } else {
-                    // If badge doesn’t exist yet, append it
-                    $('.cart-toggle').append(
-                        `<span class="cart-count badge-circle">${response.count}</span>`
+        $(document).on('submit', 'form[name="addtocart-form"]', function(e) {
+            e.preventDefault();
+            let $form = $(this);
+            let $btn = $form.find('button[type="submit"]'); // assuming you have a submit button
+            let url = $form.attr('action');
+            let formData = $form.serialize(); // serialize hidden inputs
+
+            // Disable button and show spinner
+            $btn.prop('disabled', true);
+            let originalHtml = $btn.html();
+            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Update header cart count
+                    if ($('.cart-count').length) {
+                        $('.cart-count').text(response.count);
+                    } else {
+                        // If badge doesn’t exist yet, append it
+                        $('.cart-toggle').append(
+                            `<span class="cart-count badge-circle">${response.count}</span>`
+                        );
+                    }
+
+                    // Update header subtotal
+                    $('.cart-price').text('₦' + response.subtotal);
+
+                    // Change button to "GO TO CART"
+                    $form.replaceWith(
+                        `<a href="${window.cartIndexUrl}" class="btn-icon btn-primary btn-add-cart1" style="color: #fff; background:#154821; border-color:#154821;">
+                            <i class="icon-shopping-cart"></i> GO TO CART
+                        </a>`
                     );
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added!',
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    Swal.fire(
+                        'Error',
+                        'Failed to add product to cart.',
+                        'error'
+                    );
+                },
+                complete: function() {
+                    // Re-enable button and restore original HTML in case of error
+                    $btn.prop('disabled', false).html(originalHtml);
                 }
-                // Update header subtotal
-                $('.cart-price').text('₦' + response.subtotal);
-                // Change button to "GO TO CART"
-                $form.replaceWith(`
-                    <a href="${window.cartIndexUrl}" class="btn-icon btn-primary btn-add-cart1" style="color: #fff;background:#154821;border-color:#154821;">
-                        <i class="icon-shopping-cart"></i> GO TO CART
-                    </a>
-                `);
-                Swal.fire(
-                    'Added!',
-                    response.message,
-                    'success'
-                );
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-                Swal.fire(
-                    'Error',
-                    'Failed to add product to cart.',
-                    'error'
-                );
-            }
+            });
         });
-    });
+
 
     //PageSize filter
     $("#pagesize").on('change', function() {

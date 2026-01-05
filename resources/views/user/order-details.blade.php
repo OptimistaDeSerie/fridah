@@ -146,14 +146,14 @@
                             </table>
                         </div>
                         @if($order->status != 'canceled' && $order->status != 'delivered')
-                            <div class='wg-box mt-5 text-right'>                    
+                            <!-- <div class='wg-box mt-5 text-right'>                    
                                 <form action="{{ route('user.cancel_order') }}" method='POST'>
                                     @csrf
                                     @method('PUT')
                                     <input type='hidden' name='order_id' value='{{$order->id}}' />
                                     <button type='button' class='btn btn-danger' id="cancel-order">Cancel Order</button>                        
                                 </form>
-                            </div>
+                            </div> -->
                         @endif
                     </div> {{-- tab-pane --}}
                 </div> {{-- col-lg-9 --}}
@@ -164,7 +164,6 @@
 <div class="mb-5"></div>
 @endsection
 @push('scripts')
-<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
     <script>
         $(function(){
             $("#cancel-order").on('click',function(e){

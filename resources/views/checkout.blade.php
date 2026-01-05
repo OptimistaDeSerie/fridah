@@ -93,6 +93,9 @@
                         <li>
                             <h2 class="step-title">Delivery Information</h2>
                             @if($address)
+                                <!-- Hidden defaults - always submitted unless user chooses different address -->
+                                <input type="hidden" name="address" id="hidden_address" value="{{ $address->address }}">
+                                <input type="hidden" name="delivery_fee_id" id="hidden_delivery_fee_id" value="{{ $address->delivery_fee_id }}">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group mb-1 pb-2">
@@ -107,38 +110,34 @@
                                     <div class="custom-control custom-checkbox mt-0">
                                         <input type="checkbox" class="custom-control-input" id="different_shipping" name="different_shipping" value="1"/>
                                         <label class="custom-control-label" data-toggle="collapse" data-target="#collapseFour"
-                                        aria-controls="collapseFour" for="different_shipping">Should this order be delivered to a different address?</label>
+                                            aria-controls="collapseFour" for="different_shipping">
+                                            Should this order be delivered to a different address?
+                                        </label>
                                     </div>
                                 </div>
                                 <div id="collapseFour" class="collapse">
+                                    <!-- visible fields inside collapse -->
                                     <div class="shipping-info">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group mb-1 pb-2">
-                                                    <label>Address
-                                                        <abbr class="required" title="required">*</abbr></label>
-                                                    <textarea class="form-control" name="address" id="address">{{ $address->address }}</textarea>
+                                                    <label>Address <abbr class="required" title="required">*</abbr></label>
+                                                    <textarea class="form-control" name="address" id="visible_address">{{ $address->address }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group mb-1 pb-2">
-                                                    <label>State and Delivery Carrier
-                                                        <abbr class="required" title="required">*</abbr></label>
-                                                        <select name="delivery_fee_id" class="form-control" id="delivery_fee_id" required>
-                                                            @if($address && $address->delivery_fee_id)
-                                                                <option value="{{ $address->deliveryFee->id }}" selected>
-                                                                    {{ $address->deliveryFee->state->title }} ({{ $address->deliveryFee->carrier->title }})
-                                                                </option>
-                                                            @else
-                                                                <option value="" selected>Select State & Carrier</option>
+                                                    <label>State and Delivery Carrier <abbr class="required" title="required">*</abbr></label>
+                                                    <select name="delivery_fee_id" class="form-control" id="visible_delivery_fee_id" required>
+                                                        <option value="{{ $address->deliveryFee->id }}" selected>
+                                                            {{ $address->deliveryFee->state->title }} ({{ $address->deliveryFee->carrier->title }})
+                                                        </option>
+                                                        @foreach ($deliveryFees as $fee)
+                                                            @if($fee->id != $address->delivery_fee_id)
+                                                                <option value="{{ $fee->id }}">{{ $fee->state->title }} ({{ $fee->carrier->title }})</option>
                                                             @endif
-                                                            @foreach ($deliveryFees as $fee)
-                                                                @if(!$address || $fee->id != $address->delivery_fee_id)
-                                                                    <option value="{{ $fee->id }}">{{ $fee->state->title }} ({{ $fee->carrier->title }})</option>
-                                                                @endif
-                                                            @endforeach
-                                                        </select>
-                                                        @error('delivery_fee_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -248,8 +247,8 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <button type="submit" class="btn btn-primary btn-place-order mt-4" form="checkout-form">
-                            Place order
+                        <button type="submit" class="btn btn-primary btn-place-order mt-4" id="paystack-button">
+                            Proceed to Payment
                         </button>
                     </div>
                     <!-- End .order-summary -->
@@ -262,8 +261,11 @@
 </main>
 @endsection
 @push('scripts')
+<script src="https://js.paystack.co/v2/inline.js"></script>
 <script>
 $(document).ready(function() {
+
+    // 🔥 Existing: Update shipping fee and total when delivery_fee_id changes (for live preview)
     $('#delivery_fee_id').on('change', function() {
         var feeId = $(this).val();
         if (!feeId) return;
@@ -284,6 +286,62 @@ $(document).ready(function() {
             }
         });
     });
+
+    // 🔥 NEW: Handle "different shipping address" checkbox to sync hidden/default values
+    const differentShipping = document.getElementById('different_shipping');
+    const hiddenAddress = document.getElementById('hidden_address');
+    const hiddenDeliveryFee = document.getElementById('hidden_delivery_fee_id');
+    const visibleAddress = document.getElementById('visible_address');
+    const visibleDeliveryFee = document.getElementById('visible_delivery_fee_id');
+
+    if (differentShipping) {
+        differentShipping.addEventListener('change', function () {
+            if (this.checked) {
+                // User wants a different address → clear hidden fields so visible ones are submitted
+                if (hiddenAddress) hiddenAddress.value = '';
+                if (hiddenDeliveryFee) hiddenDeliveryFee.value = '';
+            } else {
+                // Back to default address → restore hidden values from original/default
+                if (hiddenAddress && visibleAddress) {
+                    hiddenAddress.value = visibleAddress.value.trim() !== '' 
+                        ? visibleAddress.value 
+                        : '{{ addslashes(old('address', $address?->address ?? '')) }}';
+                }
+                if (hiddenDeliveryFee && visibleDeliveryFee) {
+                    hiddenDeliveryFee.value = visibleDeliveryFee.value || '{{ $address?->delivery_fee_id ?? '' }}';
+                }
+            }
+        });
+    }
+
+    // 🔥 Paystack payment button handler (unchanged except minor improvements)
+    document.getElementById('paystack-button').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        let form = document.getElementById('checkout-form');
+        let formData = new FormData(form);
+
+        fetch("{{ route('cart.place.an.order') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.authorization_url) {
+                window.location.href = data.authorization_url;
+            } else {
+                alert(data.message || 'Payment initialization failed');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Something went wrong. Please try again.');
+        });
+    });
+
 });
 </script>
 @endpush

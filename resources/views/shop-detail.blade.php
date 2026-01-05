@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('main-content')
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom_1.css') }}">
 <hr class="divider mb-0 mt-0">
 <div class="container">
     <div class="product-single-container product-single-default">
@@ -71,7 +72,7 @@
 
                     @if($inCart)
                         {{-- Already in cart: just show Go to Cart button --}}
-                        <a href="{{ route('cart.index') }}" class="btn btn-primary">Go to Cart</a>
+                        <a href="{{ route('cart.index') }}" class="btn btn-primary btn-add-cart1">Go to Cart</a>
                     @else
                         {{-- Not in cart: quantity selector + add to cart button --}}
                         <form class="addtocart-form" action="{{ route('cart.add') }}" method="POST">
@@ -88,26 +89,13 @@
                             <input type="hidden" name="name" value="{{ $product->name }}" />
                             <input type="hidden" name="price"
                                 value="{{ $product->sale_price ?: $product->regular_price }}" />  
-                            <button type="submit" class="btn btn-primary" title="Add to Cart">Add to Cart</button>
+                            <button type="submit" class="btn btn-primary btn-add-cart1" title="Add to Cart">Add to Cart</button>
                         </form>
                     @endif
                 </div>
                 <!-- End .product-action -->
 
                 <hr class="divider mb-0 mt-0">
-
-                <div class="product-single-share mb-3">
-                    <label class="sr-only">Share:</label>
-
-                    <div class="social-icons mr-2">
-                        <a href="#" class="social-icon social-facebook icon-facebook" target="_blank" title="Facebook"></a>
-                        <a href="#" class="social-icon social-twitter icon-twitter" target="_blank" title="Twitter"></a>
-                        <a href="#" class="social-icon social-linkedin fab fa-linkedin-in" target="_blank" title="Linkedin"></a>
-                        <a href="#" class="social-icon social-gplus fab fa-google-plus-g" target="_blank" title="Google +"></a>
-                        <a href="#" class="social-icon social-mail icon-mail-alt" target="_blank" title="Mail"></a>
-                    </div>
-                    <!-- End .social-icons -->
-                </div>
                 <!-- End .product single-share -->
             </div>
             <!-- End .product-single-details -->
@@ -168,8 +156,15 @@ $(document).ready(function () {
     $(document).on('submit', '.addtocart-form', function (e) {
         e.preventDefault();
         let form = $(this);
+        let $btn = form.find('button[type="submit"]'); // assume form has a submit button
         let actionUrl = form.attr('action');
         let formData = form.serialize();
+
+        // Disable button and show spinner
+        $btn.prop('disabled', true);
+        let originalHtml = $btn.html();
+        $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...');
+
         $.ajax({
             url: actionUrl,
             type: "POST",
@@ -184,15 +179,21 @@ $(document).ready(function () {
                         showConfirmButton: false
                     });
 
-                    // update cart count in header if you have it
-                    $(".cart-count").text(response.count);
+                    // Update cart count in header
+                    if ($('.cart-count').length) {
+                        $('.cart-count').text(response.count);
+                    }
 
-                    // update subtotal
-                    $(".cart-subtotal").text(response.subtotal);
-                    
-                    // turn button into "Go to Cart"
+                    // Update subtotal
+                    if ($('.cart-subtotal').length) {
+                        $('.cart-subtotal').text(response.subtotal);
+                    }
+
+                    // Turn button into "Go to Cart"
                     form.replaceWith(
-                        `<a href="{{ route('cart.index') }}" class="btn btn-primary">Go to Cart</a>`
+                        `<a href="{{ route('cart.index') }}" class="btn btn-primary btn-add-cart1">
+                            Go to Cart
+                        </a>`
                     );
                 }
             },
@@ -202,6 +203,10 @@ $(document).ready(function () {
                     title: 'Oops!',
                     text: 'Something went wrong. Please try again.'
                 });
+            },
+            complete: function () {
+                // Re-enable button and restore original HTML in case of error
+                $btn.prop('disabled', false).html(originalHtml);
             }
         });
     });

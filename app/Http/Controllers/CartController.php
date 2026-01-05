@@ -13,6 +13,10 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use Illuminate\Http\Client\HttpClientException;
 
 
 class CartController extends Controller
@@ -123,7 +127,7 @@ class CartController extends Controller
         return view('checkout', compact('address', 'user', 'deliveryFees'));
     }
 
-    public function place_an_order(Request $request){
+/*     public function place_an_order(Request $request){
         $request->validate([
             'mode' => 'required|in:paystack',
         ]);
@@ -229,33 +233,142 @@ class CartController extends Controller
             \Log::error('Order placement failed: '.$e->getMessage());
             return redirect()->back()->with('error', 'Failed to place order: '.$e->getMessage());
         }
-    }
+    } */
 
-    public function set_amount_for_checkout(){ 
-        if(!Cart::instance('cart')->count() > 0){
-            session()->forget('checkout');
-            return;
-        }    
-        session()->put('checkout',[
-            'subtotal' => Cart::instance('cart')->subtotal(),
-            'total' => Cart::instance('cart')->subtotal()
+    public function place_an_order(Request $request)
+{
+    $request->validate([
+        'delivery_fee_id' => 'required|exists:delivery_fees,id',
+    ]);
+
+    $user = auth()->user();
+
+    $subtotal = (float) str_replace(',', '', Cart::instance('cart')->subtotal());
+    $deliveryFee = DeliveryFee::findOrFail($request->delivery_fee_id);
+    $total = $subtotal + $deliveryFee->price;
+
+    $reference = 'PSTK_' . Str::upper(Str::random(10));
+
+    $response = Http::withToken(config('services.paystack.secret_key'))
+        ->post('https://api.paystack.co/transaction/initialize', [
+            'email' => $user->email,
+            'amount' => (int) ($total * 100),
+            'reference' => $reference,
+            'callback_url' => route('payment.callback'),
         ]);
+
+    if (!$response->successful()) {
+        return response()->json(['error' => 'Payment init failed'], 500);
     }
 
-    public function order_confirmation(Request $request, $order){
-        // Load the order with its items and address
-        $order = Order::with('orderItems.product')->findOrFail($order);
-        $address = Address::where('user_id', Auth::user()->id)->where('isdefault', true)->first();
-        $deliveryFee = DeliveryFee::find($address->delivery_fee_id);
-        // Clear the order_placed flag
-        session()->forget('order_placed');
-        return view('order-confirmation', compact('order', 'address', 'deliveryFee'));
+    Transaction::create([
+        'user_id' => $user->id,
+        'status' => 'pending',
+        'mode' => 'paystack',
+        'paystack_reference' => $reference,
+        'amount' => $total,
+    ]);
+
+    return response()->json([
+        'authorization_url' => $response['data']['authorization_url'],
+    ]);
+}
+
+
+    public function payment_callback(Request $request){
+        $reference = $request->query('reference');
+        if (!$reference) {
+            return redirect()->route('shop.index')->with('error', 'No payment reference');
+        }
+        // Just show a message - real fulfillment happens in webhook
+        return view('payment-waiting', compact('reference'));
     }
 
-    public function get_delivery_fee(Request $request){
-        $feeId = $request->get('delivery_fee_id');
-        $fee = DeliveryFee::with(['state', 'carrier'])->find($feeId);
-        $price = $fee ? $fee->price : 0;
-        return response()->json(['price' => $price]);
+
+public function paystack_webhook(Request $request)
+{
+    $signature = $request->header('x-paystack-signature');
+    $body = $request->getContent();
+
+    if (!$signature || !hash_equals(
+        hash_hmac('sha512', $body, config('services.paystack.secret_key')),
+        $signature
+    )) {
+        return response('Invalid', 401);
     }
+
+    $event = json_decode($body, true);
+
+    if ($event['event'] !== 'charge.success') {
+        return response('OK', 200);
+    }
+
+    $reference = $event['data']['reference'];
+
+    $transaction = Transaction::where('paystack_reference', $reference)
+        ->where('status', 'pending')
+        ->first();
+
+    if (!$transaction) {
+        return response('OK', 200);
+    }
+
+    DB::transaction(function () use ($transaction) {
+
+        $order = Order::create([
+            'user_id' => $transaction->user_id,
+            'order_no' => 'ORD-' . strtoupper(Str::random(8)),
+            'subtotal' => Cart::instance('cart')->subtotal(),
+            'total' => $transaction->amount,
+            'status' => 'ordered',
+        ]);
+
+        foreach (Cart::instance('cart')->content() as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->id,
+                'price' => $item->price,
+                'quantity' => $item->qty,
+            ]);
+        }
+
+        $transaction->update([
+            'order_id' => $order->id,
+            'status' => 'approved',
+            'paystack_response' => json_encode($event), // ← Full success event (most important)
+        ]);
+
+        Cart::instance('cart')->destroy();
+    });
+
+    return response('OK', 200);
+}
+
+        public function set_amount_for_checkout(){ 
+            if(!Cart::instance('cart')->count() > 0){
+                session()->forget('checkout');
+                return;
+            }    
+            session()->put('checkout',[
+                'subtotal' => Cart::instance('cart')->subtotal(),
+                'total' => Cart::instance('cart')->subtotal()
+            ]);
+        }
+
+        public function order_confirmation(Request $request, $order){
+            // Load the order with its items and address
+            $order = Order::with('orderItems.product')->findOrFail($order);
+            $address = Address::where('user_id', Auth::user()->id)->where('isdefault', true)->first();
+            $deliveryFee = DeliveryFee::find($address->delivery_fee_id);
+            // Clear the order_placed flag
+            session()->forget('order_placed');
+            return view('order-confirmation', compact('order', 'address', 'deliveryFee'));
+        }
+
+        public function get_delivery_fee(Request $request){
+            $feeId = $request->get('delivery_fee_id');
+            $fee = DeliveryFee::with(['state', 'carrier'])->find($feeId);
+            $price = $fee ? $fee->price : 0;
+            return response()->json(['price' => $price]);
+        }
 }

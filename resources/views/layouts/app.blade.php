@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/demo35.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/simple-line-icons/css/simple-line-icons.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom_1.css') }}">
         @stack("styles")
     </head>
     <body>
@@ -125,24 +126,24 @@
                         </div>
                         <!-- End .header-left -->
                         <div class="header-right">
-                            <div class="cart-dropdown-wrapper d-flex align-items-center">
-                                <div class="dropdown cart-dropdown">
-                                    <a href="{{ route('cart.index') }}" title="Cart" class="dropdown-toggle cart-toggle">
+                            <div class="cart-dropdown-wrapper d-flex align-items-center mr-4">
+                                <a href="{{ route('cart.index') }}" title="Cart" class="d-flex align-items-center">
+                                    <div class="dropdown cart-dropdown">
                                         <i class="icon-cart-thick"></i>
                                         @if(Cart::instance('cart')->content()->count() > 0)
                                             <span class="cart-count badge-circle">{{ Cart::instance('cart')->content()->count() }}</span>
                                         @endif
-                                    </a>
-                                </div>
-                                <!-- End .dropdown -->
-                                <span class="cart-subtotal font2 d-none d-sm-inline mr-2">
-                                    Shopping Cart
-                                    @if(Cart::instance('cart')->content()->count() > 0)
-                                        <span class="cart-price d-block font2">₦{{ Cart::instance('cart')->subtotal() }}</span>
-                                    @else
-                                        <span class="cart-price d-block font2">₦0.00</span>
-                                    @endif
-                                </span>
+                                    </div>
+                                    <!-- End .dropdown -->
+                                    <span class="cart-subtotal font2 d-none d-sm-inline ml-2">
+                                        Shopping Cart
+                                        @if(Cart::instance('cart')->content()->count() > 0)
+                                            <span class="cart-price d-block font2">₦{{ Cart::instance('cart')->subtotal() }}</span>
+                                        @else
+                                            <span class="cart-price d-block font2">₦0.00</span>
+                                        @endif
+                                    </span>
+                                </a>
                             </div>
                             <div class="header-dropdown dropdown cart-dropdown">
                                 <a href="#">

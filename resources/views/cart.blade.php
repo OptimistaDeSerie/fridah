@@ -61,27 +61,12 @@
                         <tfoot>
                             <tr>
                                 <td colspan="5" class="clearfix">
-                                    <div class="float-left">
-                                        <div class="cart-discount">
-                                            <form action="#">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control form-control-sm"
-                                                        placeholder="Coupon Code" required>
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-sm" type="submit">Apply
-                                                            Coupon</button>
-                                                    </div>
-                                                </div><!-- End .input-group -->
-                                            </form>
-                                        </div>
-                                    </div><!-- End .float-left -->
-
                                     <div class="float-right">
                                         <div class="float-right">
                                             <form method="POST" action="{{ route('cart.empty') }}" id="clear-cart-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-shop btn-update-cart" id="clear-cart-btn">
+                                                <button type="submit" class="btn btn-shop btn-update-cart btn-add-cart1" id="clear-cart-btn">
                                                     Clear Cart
                                                 </button>
                                             </form>
@@ -173,6 +158,7 @@ $(function() {
         e.preventDefault();
 
         let $form = $(this);
+        let $btn = $form.find('button[type="submit"]');
         let url = $form.attr('action');
         let token = $form.find('input[name="_token"]').val();
 
@@ -187,6 +173,11 @@ $(function() {
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Disable button and show spinner
+                $btn.prop('disabled', true);
+                let originalText = $btn.html();
+                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Clearing...');
+
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -212,11 +203,13 @@ $(function() {
                         $('.cart-count').remove(); // remove badge
                         $('.cart-price').text('₦0.00'); // reset subtotal
 
-                        Swal.fire(
-                            'Cleared!',
-                            response.message,
-                            'success'
-                        );
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cleared!',
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
@@ -225,6 +218,10 @@ $(function() {
                             'Failed to clear cart.',
                             'error'
                         );
+                    },
+                    complete: function() {
+                        // Re-enable button and restore text
+                        $btn.prop('disabled', false).html(originalText);
                     }
                 });
             }
