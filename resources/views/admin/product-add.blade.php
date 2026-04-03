@@ -30,16 +30,13 @@
                 <div class="wg-box">
                     <fieldset class="name">
                         <div class="body-title mb-10">Product name <span class="tf-color-1">*</span></div>
-                        <input class="mb-10" type="text" placeholder="Enter product name" name="name" tabindex="0" value="" aria-required="true">
-
-
+                        <input class="mb-10" type="text" placeholder="Enter product name" name="name" tabindex="0" value="{{ old('name') }}" aria-required="true">
                         <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
                     </fieldset>
                     @error("name") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
                     <fieldset class="name">
                         <div class="body-title mb-10">Slug <span class="tf-color-1">*</span></div>
-                        <input class="mb-10" type="text" placeholder="Enter product slug" name="slug" tabindex="0" value="" aria-required="true">
-                        <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
+                        <input class="mb-10" type="text" placeholder="Enter product slug" name="slug" tabindex="0" value="{{ old('slug') }}" aria-required="true">
                     </fieldset>
                     @error("slug") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
                     <div class="gap22 cols">
@@ -49,7 +46,7 @@
                                 <select class="" name="category_id">
                                     <option value="">Choose category</option>
                                     @foreach ($categories as $category)
-                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                    <option value="{{$category->id}}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{$category->name}}</option>
                                     @endforeach                                                                 
                                 </select>
                             </div>
@@ -58,20 +55,20 @@
                     </div>
                     <fieldset class="shortdescription">
                         <div class="body-title mb-10">Short Description <span class="tf-color-1">*</span></div>
-                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" tabindex="0" aria-required="true"></textarea>
-                        <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
+                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" tabindex="0" aria-required="true" maxlength="255">{{ old('short_description') }}</textarea>
                     </fieldset>
                     @error("short_description") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
                     <fieldset class="description">
                         <div class="body-title mb-10">Description <span class="tf-color-1">*</span></div>
-                        <textarea class="mb-10" name="description" placeholder="Description" tabindex="0" aria-required="true"></textarea>
-                        <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
+                        <textarea class="mb-10" name="description" placeholder="Description" tabindex="0" aria-required="true">{{ old('description') }}</textarea>
                     </fieldset>
                     @error("description") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
                 </div>
+
+                <!-- Images & Gallery -->
                 <div class="wg-box">
                     <fieldset>
-                        <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
+                        <div class="body-title">Upload Feature Image <span class="tf-color-1">*</span></div>
                         <div class="upload-image flex-grow">
                             <div class="item" id="imgpreview" style="display:none">                            
                                 <img src="{{asset('images/upload/upload-1.png')}}" class="effect8" alt="">
@@ -91,7 +88,7 @@
                     <fieldset>
                         <div class="body-title mb-10">Upload Gallery Images</div>
                         <div class="upload-image mb-16">                            
-                            <div  id ="galUpload" class="item up-load">
+                            <div id="galUpload" class="item up-load">
                                 <label class="uploadfile" for="gFile">
                                     <span class="icon">
                                         <i class="icon-upload-cloud"></i>
@@ -103,30 +100,35 @@
                         </div>                        
                     </fieldset>
                     @error("images") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
-                    <div class="cols gap22">
-                        <fieldset class="name">                                                
-                            <div class="body-title mb-10">Regular Price <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter regular price" name="regular_price" tabindex="0" value="" aria-required="true">                                              
-                        </fieldset>
-                        @error("regular_price") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
-                        <fieldset class="name">
-                            <div class="body-title mb-10">Sale Price <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter sale price" name="sale_price" tabindex="0" value="" aria-required="true">                                              
-                        </fieldset>
-                        @error("sale_price") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
+
+                    <!-- Dynamic Sizes Section (Replaces old price/quantity) -->
+                    <div class="wg-box mt-20">
+                        <div class="body-title mb-10">Product Sizes & Pricing <span class="tf-color-1">*</span></div>
+                        <div id="sizes-container">
+                            <!-- First row (always visible) -->
+                            <div class="size-row gap22 cols mb-20">
+                                <fieldset class="name">
+                                    <input class="mb-10" type="text" name="sizes[0][size]" placeholder="Size (e.g. 100g)" required>
+                                </fieldset>
+                                <fieldset class="name">
+                                    <input class="mb-10" type="number" step="0.01" name="sizes[0][regular_price]" placeholder="Regular Price" required>
+                                </fieldset>
+                                <fieldset class="name">
+                                    <input class="mb-10" type="number" step="0.01" name="sizes[0][sale_price]" placeholder="Sale Price" required>
+                                </fieldset>
+                                <fieldset class="name">
+                                    <input class="mb-10" type="number" min="0" name="sizes[0][quantity]" placeholder="Quantity" required>
+                                </fieldset>
+                                <button type="button" class="tf-button remove-size-btn" style="display:none;">Remove</button>
+                            </div>
+                        </div>
+
+                        <button type="button" id="add-size-btn" class="tf-button style-2">+ Add Another Size</button>
+                        @error('sizes') <span class="alert alert-danger text-center d-block mt-10">{{$message}}</span> @enderror
+                        @error('sizes.*') <span class="alert alert-danger text-center d-block mt-10">{{$message}}</span> @enderror
                     </div>
-                    <div class="cols gap22">
-                        <fieldset class="name">                                                
-                            <div class="body-title mb-10">SKU <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter SKU" name="SKU" tabindex="0" value="" aria-required="true">                                              
-                        </fieldset>
-                        @error("SKU") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
-                        <fieldset class="name">
-                            <div class="body-title mb-10">Quantity <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter quantity" name="quantity" tabindex="0" value="" aria-required="true">                                              
-                        </fieldset>
-                        @error("quantity") <span class="alert alert-danger text-center">{{$message}}</span> @enderror
-                    </div>
+
+                    <!-- Stock & Featured -->
                     <div class="cols gap22">
                         <fieldset class="name">
                             <div class="body-title mb-10">Stock</div>
@@ -160,34 +162,77 @@
     </div>
     <!-- /main-content-wrap -->
 @endsection
+
 @push("scripts")
     <script>
-            $(function(){
-                $("#myFile").on("change",function(e){
-                    const photoInp = $("#myFile");                    
-                    const [file] = this.files;
-                    if (file) {
-                        $("#imgpreview img").attr('src',URL.createObjectURL(file));
-                        $("#imgpreview").show();                        
-                    }
-                });
-                $("#gFile").on("change",function(e){
-                    $(".gitems").remove();
-                    const gFile = $("gFile");
-                    const gphotos = this.files;                    
-                    $.each(gphotos,function(key,val){                        
-                        $("#galUpload").prepend(`<div class="item gitems"><img src="${URL.createObjectURL(val)}" alt=""></div>`);                        
-                    });                    
-                });
-                $("input[name='name']").on("change",function(){
-                    $("input[name='slug']").val(StringToSlug($(this).val()));
-                });
-                
+        $(function(){
+            // Main image preview
+            $("#myFile").on("change",function(e){
+                const [file] = this.files;
+                if (file) {
+                    $("#imgpreview img").attr('src', URL.createObjectURL(file));
+                    $("#imgpreview").show();                        
+                }
             });
-            function StringToSlug(Text) {
-                return Text.toLowerCase()
+
+            // Gallery preview
+            $("#gFile").on("change",function(e){
+                $(".gitems").remove();
+                $.each(this.files, function(key, val){                        
+                    $("#galUpload").prepend(`<div class="item gitems"><img src="${URL.createObjectURL(val)}" alt=""></div>`);                        
+                });                    
+            });
+
+            // Auto-generate slug from name
+            $("input[name='name']").on("input", function(){
+                $("input[name='slug']").val(StringToSlug($(this).val()));
+            });
+
+            // Dynamic Sizes Management
+            let sizeIndex = 1;
+
+            $("#add-size-btn").on("click", function() {
+                let newRow = `
+                    <div class="size-row gap22 cols mb-20">
+                        <fieldset class="name">
+                            <input class="mb-10" type="text" name="sizes[${sizeIndex}][size]" placeholder="Size (e.g. 300g)" required>
+                        </fieldset>
+                        <fieldset class="name">
+                            <input class="mb-10" type="number" step="0.01" name="sizes[${sizeIndex}][regular_price]" placeholder="Regular Price" required>
+                        </fieldset>
+                        <fieldset class="name">
+                            <input class="mb-10" type="number" step="0.01" name="sizes[${sizeIndex}][sale_price]" placeholder="Sale Price" required>
+                        </fieldset>
+                        <fieldset class="name">
+                            <input class="mb-10" type="number" min="0" name="sizes[${sizeIndex}][quantity]" placeholder="Quantity" required>
+                        </fieldset>
+                        <button type="button" class="tf-button remove-size-btn">Remove</button>
+                    </div>`;
+                $("#sizes-container").append(newRow);
+                sizeIndex++;
+                updateRemoveButtons();
+            });
+
+            // Remove size row
+            $(document).on("click", ".remove-size-btn", function() {
+                $(this).closest(".size-row").remove();
+                updateRemoveButtons();
+            });
+
+            function updateRemoveButtons() {
+                if ($(".size-row").length === 1) {
+                    $(".remove-size-btn").hide();
+                } else {
+                    $(".remove-size-btn").show();
+                }
+            }
+            updateRemoveButtons(); // Initial state
+        });
+
+        function StringToSlug(Text) {
+            return Text.toLowerCase()
                 .replace(/[^\w ]+/g, "")
                 .replace(/ +/g, "-");
-            }      
+        }      
     </script>
 @endpush

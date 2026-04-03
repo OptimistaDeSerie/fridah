@@ -21,15 +21,18 @@
                 <!-- Main Content -->
                 <div class="col-lg-9 order-lg-last order-1 tab-content">
                     <div class="tab-pane fade show active" id="addresses" role="tabpanel">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <!-- <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3>My Addresses</h3>
                             <a href="{{ route('cart.checkout') }}" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Add New Address
                             </a>
-                        </div>
+                        </div> -->
 
                         @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger">{{ session('error') }}</div>
                         @endif
 
                         @if($addresses->isEmpty())
@@ -65,7 +68,6 @@
                                                 @if(!$address->isdefault)
                                                     <form action="{{ route('user.set_default_address', $address) }}" method="POST" class="d-inline">
                                                         @csrf
-                                                        @method('PATCH')
                                                         <button type="submit" class="btn btn-sm btn-outline-primary">
                                                             Set as Default
                                                         </button>
@@ -87,7 +89,7 @@
 @endsection
 @push('scripts')
 <script>
-    document.querySelectorAll('form[action*="/set-default"]').forEach(form => {
+    document.querySelectorAll('form[action*="/set-default-address"]').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             Swal.fire({

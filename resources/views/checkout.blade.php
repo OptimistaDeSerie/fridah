@@ -55,6 +55,26 @@
         color: #222529;
         font-size: 2.2rem;
     }
+
+    #checkout-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        text-align: center;
+    }
+
+    .overlay-content {
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+    }
 </style>
 <hr class="divider mb-0 mt-0">
 <main class="main">
@@ -87,6 +107,12 @@
         @endif
         <form id="checkout-form" name="checkout-form" action="{{ route('cart.place.an.order') }}" method="POST">
             @csrf
+            <div id="checkout-overlay" style="display:none;">
+                <div class="overlay-content">
+                    <div class="spinner-border text-success mb-3" role="status"></div>
+                    <div>Processing your request...</div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-7">
                     <ul class="checkout-steps">
@@ -173,7 +199,6 @@
                     </ul>
                 </div>
                 <!-- End .col-lg-7 -->
-
                 <div class="col-lg-5">
                     <div class="order-summary">
                         <h3>YOUR ORDER</h3>
@@ -188,8 +213,14 @@
                                 <tr>
                                     <td class="product-col">
                                         <h3 class="product-title">
-                                            {{ $item->name }} (<span class="product-qty">{{ $item->qty }} unit(s)</span>)
+                                            {{ $item->name }}
+                                            (<span class="product-qty">{{ $item->qty }} unit(s)</span>)
                                         </h3>
+                                        @if(isset($item->options['size_name']))
+                                            <div class="text-muted" style="font-size: 13px;">
+                                                Size: {{ $item->options['size_name'] }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="price-col">
                                         <span>₦{{ $item->price }}</span>
@@ -264,9 +295,7 @@
 <script src="https://js.paystack.co/v2/inline.js"></script>
 <script>
 $(document).ready(function() {
-
-    // 🔥 Existing: Update shipping fee and total when delivery_fee_id changes (for live preview)
-    $('#delivery_fee_id').on('change', function() {
+    $(document).on('change', '#delivery_fee_id, #visible_delivery_fee_id', function() {
         var feeId = $(this).val();
         if (!feeId) return;
         $.ajax({
@@ -274,20 +303,35 @@ $(document).ready(function() {
             type: 'GET',
             data: { delivery_fee_id: feeId },
             success: function(response) {
-                // Update shipping price
-                $('.cart-shipping .price-col span').text('₦' + response.price);
-                // Update subtotal and total
-                var subtotal = parseFloat($('#cart-subtotal .price-col span').text().replace(/[^\d.]/g, ''));
+                $('.cart-shipping .price-col span')
+                    .text('₦' + parseFloat(response.price).toLocaleString('en-NG', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
+                var subtotal = parseFloat(
+                    $('#cart-subtotal .price-col span')
+                    .text()
+                    .replace(/[^\d.]/g, '')
+                );
                 var total = subtotal + parseFloat(response.price);
-                $('.total-price span').text('₦' + total.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('.total-price span')
+                    .text('₦' + total.toLocaleString('en-NG', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
             },
-            error: function(xhr) {
-                alert('Could not fetch delivery fee.');
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Could not fetch delivery fee.',
+                    confirmButtonColor: '#4dae65'
+                });
             }
         });
     });
 
-    // 🔥 NEW: Handle "different shipping address" checkbox to sync hidden/default values
+    // "different shipping address" checkbox to sync hidden/default values
     const differentShipping = document.getElementById('different_shipping');
     const hiddenAddress = document.getElementById('hidden_address');
     const hiddenDeliveryFee = document.getElementById('hidden_delivery_fee_id');
@@ -296,31 +340,52 @@ $(document).ready(function() {
 
     if (differentShipping) {
         differentShipping.addEventListener('change', function () {
+    
             if (this.checked) {
-                // User wants a different address → clear hidden fields so visible ones are submitted
-                if (hiddenAddress) hiddenAddress.value = '';
-                if (hiddenDeliveryFee) hiddenDeliveryFee.value = '';
+                $('#visible_address').prop('required', true);
+                $('#visible_delivery_fee_id').prop('required', true);
             } else {
-                // Back to default address → restore hidden values from original/default
-                if (hiddenAddress && visibleAddress) {
-                    hiddenAddress.value = visibleAddress.value.trim() !== '' 
-                        ? visibleAddress.value 
-                        : '{{ addslashes(old('address', $address?->address ?? '')) }}';
-                }
-                if (hiddenDeliveryFee && visibleDeliveryFee) {
-                    hiddenDeliveryFee.value = visibleDeliveryFee.value || '{{ $address?->delivery_fee_id ?? '' }}';
-                }
+                $('#visible_address').prop('required', false);
+                $('#visible_delivery_fee_id').prop('required', false);
             }
+    
         });
     }
 
-    // 🔥 Paystack payment button handler (unchanged except minor improvements)
+    // Paystack payment button handler
     document.getElementById('paystack-button').addEventListener('click', function (e) {
         e.preventDefault();
+        const btn = this;
+        const form = document.getElementById('checkout-form');
+        // DELIVERY VALIDATION FIRST
+        //let visibleDelivery = $('#delivery_fee_id').length ? $('#delivery_fee_id').val() : null;
+        //let hiddenDelivery  = $('#hidden_delivery_fee_id').length ? $('#hidden_delivery_fee_id').val() : null;
+        let deliveryValue = null;
+        if ($('#different_shipping').is(':checked')) {
+            deliveryValue = $('#visible_delivery_fee_id').val();
+        } else {
+            deliveryValue = $('#hidden_delivery_fee_id').val() 
+                || $('#delivery_fee_id').val();
+        }
+        if (!deliveryValue) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Delivery Location Required',
+                text: 'Please select a delivery location before proceeding.',
+                confirmButtonColor: '#4dae65'
+            });
+            return;
+        }
 
-        let form = document.getElementById('checkout-form');
+        document.getElementById('checkout-overlay').style.display = 'flex';
+        btn.disabled = true;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Processing Payment...
+        `;
+
         let formData = new FormData(form);
-
         fetch("{{ route('cart.place.an.order') }}", {
             method: 'POST',
             body: formData,
@@ -333,15 +398,24 @@ $(document).ready(function() {
             if (data.authorization_url) {
                 window.location.href = data.authorization_url;
             } else {
-                alert(data.message || 'Payment initialization failed');
+                throw new Error(data.message || 'Payment initialization failed');
             }
         })
         .catch(err => {
             console.error(err);
-            alert('Something went wrong. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Failed',
+                text: err.message || 'Something went wrong. Please try again.',
+                confirmButtonColor: '#4dae65'
+            });
+
+            // UNLOCK UI ONLY IF ERROR
+            document.getElementById('checkout-overlay').style.display = 'none';
+            btn.disabled = false; 
+            btn.innerHTML = originalHtml;
         });
     });
-
 });
 </script>
 @endpush

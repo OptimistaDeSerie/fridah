@@ -8,10 +8,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="Fridah's Spice" />
         <meta name="description" content="Fridah's Spice - Your one-stop shop for all spices" />
-        <meta name="author" content="SW-THEMES">
 
         <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/icons/favicon') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/icons/favicon.ico') }}">
 
         <script>
             WebFontConfig = {
@@ -97,8 +96,8 @@
                                 <form action="{{ route('shop.index') }}" method="GET">
                                     <div class="header-search-wrapper">
                                         <input type="search" class="form-control" name="q" id="q" placeholder="Search..." value="{{ request()->query('q') }}" required>
-                                        <div class="select-custom">
-                                            <select id="cat" name="cat" required>
+                                        <!-- <div class="select-custom">
+                                            <select id="cat" name="cat">
                                                 <option value="">All Categories</option>
                                                 @foreach ($menucategories as $category)
                                                     <option value="{{ $category->id }}"
@@ -115,7 +114,7 @@
                                                     @endif
                                                 @endforeach
                                             </select>
-                                        </div>
+                                        </div> -->
                                         <!-- End .select-custom -->
                                         <button class="btn icon-magnifier p-0" title="search" type="submit"></button>
                                     </div>

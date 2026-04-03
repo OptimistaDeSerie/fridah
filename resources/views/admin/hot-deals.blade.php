@@ -29,7 +29,8 @@
                         <tr>
                             <th>Image</th>
                             <th>Product Name</th>
-                            <th>Price</th>
+                            <th>Price Range</th>
+                            <th>Total Stock</th>
                             <th>HOT Label</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -46,10 +47,34 @@
                                     No Image
                                 @endif
                             </td>
-                            <td>{{ $item->product?->name ?? 'Deleted' }}</td>
-                            <td>{{ $item->product?->price ?? '-' }}</td>
+                            <td>
+                                {{ $item->product?->name ?? 'Deleted Product' }}
+                                @if(!$item->product)
+                                    <small class="text-danger">(deleted)</small>
+                                @endif
+                            </td>
+                            <td>
+                                @if($item->product && $item->product->sizes->count() > 0)
+                                    ₦{{ number_format($item->product->sizes->min('sale_price')) }}
+                                    @if($item->product->sizes->min('sale_price') != $item->product->sizes->max('sale_price'))
+                                        - ₦{{ number_format($item->product->sizes->max('sale_price')) }}
+                                    @endif
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                {{ $item->product?->sizes->sum('quantity') ?? 0 }}
+                                @if($item->product?->sizes->sum('quantity') > 0)
+                                    pcs
+                                @endif
+                            </td>
                             <td>{{ $item->show_hot_label ? 'Yes' : 'No' }}</td>
-                            <td>{{ $item->status ? 'Active' : 'Inactive' }}</td>
+                            <td>
+                                <span class="badge {{ $item->status ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $item->status ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
                             <td>
                                 <div class="list-icon-function">
                                     <a href="{{ route('admin.hot.deal.edit', $item->id) }}">
@@ -63,9 +88,6 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-4">No hot deals yet. <a href="{{ route('admin.hot.deal.add') }}">Add one</a></td>
-                        </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -86,24 +108,28 @@
         paging: true,
         searching: true,
         info: true,
-        lengthChange: true, // hides "Show entries" dropdown if you want
+        lengthChange: true,
         language: {
             search: "Search:",
             paginate: {
                 previous: "<i class='icon-chevron-left'></i>",
                 next: "<i class='icon-chevron-right'></i>"
-            }
+            },
+            // Optional: nicer empty message inside DataTables
+            emptyTable: "No hot deals found. <a href='{{ route('admin.hot.deal.add') }}'>Add one</a>"
         }
     });
+
     $('.dt-input').addClass('float-start mb-3').css({
         'margin-right': '100px',
     });
+
     $(".delete").click(function(e){
         e.preventDefault();
         var form = $(this).closest('form');
         swal({
             title: "Are you sure?",
-            text: "Remove this product from Hot Deals?",
+            text: "Remove this product from Hot Deals? It will no longer appear in the hot deals section.",
             type: "warning",
             buttons: ["Cancel", "Yes"],
             confirmButtonColor: '#dc3545'

@@ -14,6 +14,8 @@ use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Models\State;
 use App\Models\DeliveryFee;
+use App\Mail\WelcomeMail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
@@ -22,7 +24,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $states = State::orderBy('title')->get();
+        return view('auth.register', compact('states'));
     }
 
     /**
@@ -35,8 +38,9 @@ class RegisteredUserController extends Controller
         $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'max:20', 'unique:users,phone'], // <--- Add unique check
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'state_id' => ['required', 'exists:states,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -48,15 +52,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // 🔹 Dynamically get the first available State and DeliveryFee
-        $firstState = State::first();           // Gets the first state in the table
-        $firstDeliveryFee = DeliveryFee::first(); // Gets the first delivery fee record
-        // 🔹 create a default address row for this user
+        $state = State::findOrFail($request->state_id);
+        $deliveryFee = DeliveryFee::where('state_id', $state->id)->first();
         Address::create([
             'user_id'         => $user->id,
-            'state_id'        => $firstState?->id,          // Safe: null if no states exist
-            'delivery_fee_id' => $firstDeliveryFee?->id,    // Safe: null if no delivery fees exist
-            'address'         => '',                        // Empty string instead of null (better for display)
+            'state_id'        => $state->id,  
+            'delivery_fee_id' => $deliveryFee->id,
+            'address'         => '',
             'type'            => 'home',
             'isdefault'       => 1,
         ]);
@@ -64,7 +66,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
+        Mail::to($user->email)->send(new WelcomeMail($user));
         return redirect(route('index', absolute: false));
     }
 }

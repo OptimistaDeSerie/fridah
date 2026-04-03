@@ -5,6 +5,7 @@ use App\Models\HomeSlider;
 use App\Models\PopularCategorySlider;
 use App\Models\HotDealProduct;
 use App\Models\Product;
+use App\Models\ProductSize;
 use App\Models\OrderItem;
 use App\Models\HomeBanner;
 use Illuminate\Http\Request;
@@ -22,39 +23,42 @@ class HomeController extends Controller
             ->orderBy('sort_order', 'ASC')
             ->orderBy('id', 'DESC')
             ->get();
-        $hotDeals = HotDealProduct::with('product')
+        $hotDeals = HotDealProduct::with(['product' => function ($query) {
+                $query->with('sizes');  // Important: load sizes
+            }])
             ->where('status', true)
             ->orderBy('sort_order', 'ASC')
-            ->get();
+            ->get()
+            ->filter(function ($deal) {
+                // Only keep deals where the product still exists and has at least one size
+                return $deal->product && $deal->product->sizes->isNotEmpty();
+            });
         $leftBanner = HomeBanner::where('banner_type', 'left')->where('status', 1)->orderBy('sort_order')->first();
         $rightBanner = HomeBanner::where('banner_type', 'right')->where('status', 1)->orderBy('sort_order')->first();
 
-        // Top Sellers – Pure Eloquent, no DB::table, no raw SQL issues
         $topSellerIds = OrderItem::select('product_id')
-            ->selectRaw('SUM(quantity) as total_sold')
-            ->groupBy('product_id')
-            ->orderByDesc('total_sold')
-            ->limit(9)
-            ->pluck('product_id');
+        ->selectRaw('SUM(quantity) as total_sold')
+        ->groupBy('product_id')
+        ->orderByDesc('total_sold')
+        ->limit(9)
+        ->pluck('product_id');
+
         if ($topSellerIds->isEmpty()) {
-            // No orders yet → show 9 random in-stock products
             $topSellers = Product::with('category')
-                ->where('quantity', '>', 0) // optional: only products with stock
+                ->whereHas('sizes', fn($q) => $q->where('quantity', '>', 0))
                 ->inRandomOrder()
                 ->limit(9)
                 ->get();
         } else {
-            // Get products in exact sales rank order using preserve order trick
+            $idsOrder = implode(',', $topSellerIds->toArray());
             $topSellers = Product::with('category')
-                ->findMany($topSellerIds) // fetches in the order of the IDs array
-                ->sortBy(function ($product) use ($topSellerIds) {
-                    return $topSellerIds->search($product->id);
-                })
-                ->values();
+                ->whereIn('id', $topSellerIds)
+                ->when($idsOrder, fn($q) => $q->orderByRaw("FIELD(id, $idsOrder)"))
+                ->get();
         }
-        // Split for layout
-        $featuredSeller = $topSellers->shift(); // #1 bestseller (left)
-        $gridSellers = $topSellers;             // remaining 8 (right grid)
+
+        $featuredSeller = $topSellers->shift();   // first one = featured
+        $gridSellers    = $topSellers;            // rest = grid
 
         return view('index', compact(
             'homeSliders',

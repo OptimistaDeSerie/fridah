@@ -21,33 +21,30 @@
         
         <div class="wg-box">
             <div class="flex items-center justify-between gap10 flex-wrap">
-                <div class="wg-filter flex-grow">
-                    <form class="form-search">
-                        <fieldset class="name">
-                            <input type="text" placeholder="Search here..." class="" name="name" tabindex="2" value="" aria-required="true" required="">
-                        </fieldset>
-                        <div class="button-submit">
-                            <button class="" type="submit"><i class="icon-search"></i></button>
-                        </div>
-                    </form>
+                <div class="wg-filter flex-grow"></div>
+                    <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add new</a>
                 </div>
-                <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add new</a>
-            </div>
             <div class="table-responsive">
                 @if(Session::has('success'))
                     <p class="alert alert-success">{{ Session::get('success') }}</p>
                 @endif
+                @if(Session::has('status'))
+                    <p class="alert alert-success">{{ Session::get('status') }}</p>
+                @endif
+
                 <table class="table table-striped table-bordered table-responsive" id="products-table">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Price</th>
-                            <th>SalePrice</th>
+                            <!-- Replaced Price & SalePrice with Price Range -->
+                            <th>Price Range</th>
                             <th>SKU</th>
                             <th>Category</th>
-                            <th>Featured</th>
-                            <th>Stock</th>
-                            <th>Quantity</th>
+                            <th>Stock Status</th>
+                            <!-- Total Stock (sum of all sizes) -->
+                            <th>Total Stock</th>
+                            <!-- Available Sizes -->
+                            <th>Sizes</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -63,13 +60,39 @@
                                     <div class="text-tiny mt-3">{{$product->slug}}</div>
                                 </div>  
                             </td>
-                            <td>₦{{$product->regular_price}}</td>
-                            <td>₦{{$product->sale_price}}</td>
+                            <td>
+                                @if($product->sizes->count() > 0)
+                                    ₦{{ number_format($product->sizes->min('sale_price')) }}
+                                    @if($product->sizes->min('sale_price') != $product->sizes->max('sale_price'))
+                                        - ₦{{ number_format($product->sizes->max('sale_price')) }}
+                                    @endif
+                                @else
+                                    <span class="text-muted">No sizes</span>
+                                @endif
+                            </td>
                             <td>{{$product->SKU}}</td>
-                            <td>{{$product->category->name}}</td>
-                            <td>{{$product->featured == 0 ? "No":"Yes"}}</td>
-                            <td>{{$product->stock_status}}</td>
-                            <td>{{$product->quantity}}</td>
+                            <td>{{$product->category?->name ?? 'Uncategorized'}}</td>
+                            <td>
+                                <span class="badge {{ $product->stock_status == 'instock' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ ucfirst($product->stock_status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <!-- Total quantity across all sizes -->
+                                {{ $product->sizes->sum('quantity') }}
+                            </td>
+                            <td>
+                                <!-- List all sizes (compact view) -->
+                                @if($product->sizes->count() > 0)
+                                    <small>
+                                        @foreach($product->sizes as $size)
+                                            <div>{{ $size->size }} ({{ $size->quantity }} pcs)</div>
+                                        @endforeach
+                                    </small>
+                                @else
+                                    <span class="text-muted">None</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="list-icon-function">
                                     <a href="{{route('admin.product.edit',['id'=>$product->id])}}">
@@ -106,34 +129,40 @@
         paging: true,
         searching: true,
         info: true,
-        lengthChange: true, // hides "Show entries" dropdown if you want
+        lengthChange: true,
         language: {
             search: "Search:",
             paginate: {
                 previous: "<i class='icon-chevron-left'></i>",
                 next: "<i class='icon-chevron-right'></i>"
             }
-        }
+        },
+        //Make sizes column readable in DataTables
+        columnDefs: [
+            { targets: [7], orderable: false } // Sizes column
+        ]
     });
+
     $('.dt-input').addClass('float-start mb-3').css({
-        'margin-right': '100px',
+        'margin-right': '10px',
     });
-        $(function(){
-            $(".delete").on('click',function(e){
-                e.preventDefault();
-                var selectedForm = $(this).closest('form');
-                swal({
-                    title: "Are you sure?",
-                    text: "You want to delete this Product?",
-                    type: "warning",
-                    buttons: ["No!", "Yes!"],
-                    confirmButtonColor: '#dc3545'
-                }).then(function (result) {
-                    if (result) {
-                        selectedForm.submit();  
-                    }
-                });                             
-            });
+
+    $(function(){
+        $(".delete").on('click',function(e){
+            e.preventDefault();
+            var selectedForm = $(this).closest('form');
+            swal({
+                title: "Are you sure?",
+                text: "You want to delete this Product? This will also delete all its sizes!",
+                type: "warning",
+                buttons: ["No!", "Yes!"],
+                confirmButtonColor: '#dc3545'
+            }).then(function (result) {
+                if (result) {
+                    selectedForm.submit();  
+                }
+            });                             
         });
+    });
     </script>    
 @endpush

@@ -15,7 +15,6 @@
                 <div class="banner-layer banner-layer-middle banner-layer-{{ $slide->text_position == 'right' ? 'right' : 'left' }}">
                     @if($slide->title)
                     <h4 class="font-weight-normal text-body m-b-2 appear-animate" data-animation-name="fadeInDownShorter" data-animation-delay="100">
-                        Exclusive Product New Arrival
                     </h4>
                     <h2 class="appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="600">
                         {{ $slide->title }}
@@ -73,7 +72,7 @@
                 <div class="info-box info-box-icon-left">
                     <i class="icon-shipping text-primary"></i>
                     <div class="info-content">
-                        <h4 class="ls-n-25">Express Shipping to all statesg</h4>
+                        <h4 class="ls-n-25">Express Shipping to all states</h4>
                         <p class="font2 font-weight-light text-body ls-10">GIG and local carriers.
                         </p>
                     </div>
@@ -128,61 +127,101 @@
                 <div class="products-container product-slider-tab rounded">
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="all">
-                            <div class="products-slider owl-carousel owl-theme nav-outer" data-owl-options="{
-                                'dots': false,
-                                'nav': true,
-                                'margin': 0,
-                                'responsive': {
-                                    '576': {'items': 3},
-                                    '768': {'items': 4},
-                                    '1200': {'items': 6}
+                            <div class="products-slider owl-carousel owl-theme nav-outer" data-owl-options='{
+                                "dots": false,
+                                "nav": true,
+                                "margin": 0,
+                                "responsive": {
+                                    "576": {"items": 3},
+                                    "768": {"items": 4},
+                                    "1200": {"items": 6}
                                 }
-                            }">
+                            }'>
                                 @forelse($hotDeals as $deal)
-                                    @if($deal->product)
-                                    <div class="product-default inner-quickview inner-icon">
-                                        <figure>
-                                            <a href="{{ route('shop.product.details', $deal->product->slug) }}">
-                                                <img src="{{ asset('backend/uploads/products/' . $deal->product->image) }}"
-                                                    width="217" height="217"
-                                                    alt="{{ $deal->product->name }}">
-                                            </a>
-                                            @if($deal->show_hot_label)
-                                            <div class="label-group">
-                                                <div class="product-label label-hot">HOT</div>
-                                            </div>
-                                            @endif
-                                            <div class="btn-icon-group">
-                                                <a href="{{ route('shop.product.details', $deal->product->slug) }}" 
-                                                class="btn-icon btn-add-cart">
-                                                    <i class="fa fa-arrow-right"></i>
+                                    @if($deal->product && $deal->product->sizes->isNotEmpty())
+                                        @php
+                                            $lowestSale  = $deal->product->sizes->min('sale_price');
+                                            $highestSale = $deal->product->sizes->max('sale_price');
+                                            $lowestRegular = $deal->product->sizes->min('regular_price');
+
+                                            $showRange   = $lowestSale != $highestSale;
+                                            $discountPct = $lowestRegular > 0 ? round((1 - $lowestSale / $lowestRegular) * 100) : 0;
+                                        @endphp
+
+                                        <div class="product-default inner-quickview inner-icon">
+                                            <figure>
+                                                <a href="{{ route('shop.product.details', $deal->product->slug) }}">
+                                                    <img loading="lazy" 
+                                                        src="{{ asset('backend/uploads/products/' . $deal->product->image) }}"
+                                                        width="217" height="217"
+                                                        alt="{{ $deal->product->name }}">
                                                 </a>
-                                            </div>
-                                            <a href="{{ route('shop.product.details', $deal->product->slug) }}" class="btn-quickview" title="Quick View">
-                                                View
-                                            </a>
-                                        </figure>
-                                        <div class="product-details">
-                                            <div class="category-wrap">
-                                                <div class="category-list">
-                                                    @if($deal->product->category)
-                                                        <a href="{{ route('shop.index') }}?categories={{ $deal->product->category->id }}" class="product-category">{{ $deal->product->category->name }}</a>
+
+                                                @if($deal->show_hot_label)
+                                                    <div class="label-group">
+                                                        <div class="product-label label-hot">HOT</div>
+                                                    </div>
+                                                @endif
+
+                                                @if($discountPct > 0)
+                                                    <div class="label-group label-sale">
+                                                        <div class="product-label label-sale">-{{ $discountPct }}%</div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="btn-icon-group">
+                                                    <a href="{{ route('shop.product.details', $deal->product->slug) }}" 
+                                                    class="btn-icon btn-add-cart">
+                                                        <i class="fa fa-arrow-right"></i>
+                                                    </a>
+                                                </div>
+
+                                                <a href="{{ route('shop.product.details', $deal->product->slug) }}" 
+                                                class="btn-quickview" title="Quick View">
+                                                    View
+                                                </a>
+                                            </figure>
+
+                                            <div class="product-details">
+                                                <div class="category-wrap">
+                                                    <div class="category-list">
+                                                        @if($deal->product->category)
+                                                            <a href="{{ route('shop.index') }}?categories={{ $deal->product->category->id }}"
+                                                            class="product-category">
+                                                                {{ $deal->product->category->name }}
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                <h3 class="product-title">
+                                                    <a href="{{ route('shop.product.details', $deal->product->slug) }}">
+                                                        {{ $deal->product->name }}
+                                                    </a>
+                                                </h3>
+
+                                                <div class="price-box">
+                                                    @if($showRange)
+                                                        <span class="product-price">
+                                                            From {{ $currency }} {{ number_format($lowestSale, 0) }}
+                                                        </span>
+                                                    @else
+                                                        <span class="product-price">
+                                                            {{ $currency }} {{ number_format($lowestSale, 0) }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if($discountPct > 0)
+                                                        <del class="old-price">
+                                                            {{ $currency }} {{ number_format($lowestRegular, 0) }}
+                                                        </del>
                                                     @endif
                                                 </div>
                                             </div>
-                                            <h3 class="product-title">
-                                                <a href="{{ route('shop.product.details', $deal->product->slug) }}">
-                                                    {{ $deal->product->name }}
-                                                </a>
-                                            </h3>
-                                            <div class="price-box">
-                                                <span class="product-price">{{ $currency }} {{ number_format($deal->product->sale_price ?? 0, 2) }}</span>
-                                            </div>
                                         </div>
-                                    </div>
                                     @endif
                                 @empty
-                                    <p class="text-center py-4 w-100">No hot deals available.</p>
+                                    <p class="text-center py-4 w-100">No hot deals available right now.</p>
                                 @endforelse
                             </div>
                         </div>
@@ -230,109 +269,120 @@
             </div>
             <h2 class="section-title">Top Sellers</h2><br>
             <div class="row offer-products">
-                @if($featuredSeller)
-                <div class="col-md-4 appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="100">
-                    <div class="count-deal bg-white rounded mb-md-0">
-                        <div class="product-default">
-                            <figure>
-                                <a href="{{ route('shop.product.details', $featuredSeller->slug ?? $featuredSeller->id) }}">
-                                    <img src="{{ asset('backend/uploads/products/' . $featuredSeller->image) }}" 
-                                        alt="{{ $featuredSeller->name }}" 
-                                        width="1200" 
-                                        height="1200"
-                                        class="w-100">
-                                </a>
-                            </figure><br><br>
-                            <div class="product-details">
-                                <div class="category-list">
-                                    <a href="{{ route('shop.index') }}?categories={{ $featuredSeller->category->id }}" class="product-category">
-                                        {{ $featuredSeller->category->name ?? 'Category' }}
+                @if($featuredSeller && $featuredSeller->sizes->isNotEmpty())
+                    <div class="col-md-4 appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="100">
+                        <div class="count-deal bg-white rounded mb-md-0">
+                            <div class="product-default">
+                                <figure>
+                                    <a href="{{ route('shop.product.details', $featuredSeller->slug) }}">
+                                        <img src="{{ asset('backend/uploads/products/' . $featuredSeller->image) }}" 
+                                            alt="{{ $featuredSeller->name }}" 
+                                            width="1200" 
+                                            height="1200"
+                                            class="w-100">
                                     </a>
-                                </div>
-                                <h3 class="product-title">
-                                    <a href="{{ route('shop.product.details', $featuredSeller->slug ?? $featuredSeller->id) }}">
-                                        {{ Str::limit($featuredSeller->name, 30) }}
-                                    </a>
-                                </h3>
-                                <div class="price-box">
-                                    @if($featuredSeller->regular_price && $featuredSeller->sale_price && $featuredSeller->regular_price > $featuredSeller->sale_price)
-                                        <del class="old-price">{{ $currency }}{{ number_format($featuredSeller->regular_price, 2) }}</del>
-                                        <span class="product-price">{{ $currency }}{{ number_format($featuredSeller->sale_price, 2) }}</span>
-                                    @else
-                                        <span class="product-price">{{ $currency }}{{ number_format($featuredSeller->regular_price ?? $featuredSeller->sale_price, 2) }}</span>
-                                    @endif
-                                </div>
-                                <div class="product-action">
-                                    <a href="{{ route('shop.product.details', $featuredSeller->slug ?? $featuredSeller->id) }}" 
-                                    class="btn-icon btn-add-cart product-type-simple">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                @if($gridSellers->count() > 0)
-                <div class="col-md-8 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="300">
-                    <div class="custom-products bg-white rounded">
-                        <div class="row">
-                            @foreach($gridSellers as $seller)
-                            <div class="col-6 col-sm-4 col-xl-3">
-                                <div class="product-default inner-quickview inner-icon">
-                                    <figure>
-                                        <a href="{{ route('shop.product.details', $seller->slug ?? $seller->id) }}">
-                                            <img src="{{ asset('backend/uploads/products/' . $seller->image) }}" 
-                                                width="217" 
-                                                height="217" 
-                                                alt="{{ $seller->name }}"
-                                                class="w-100">
+                                </figure>
+                                <br><br>
+                                <div class="product-details">
+                                    <div class="category-list">
+                                        <a href="{{ route('shop.index') }}?categories={{ $featuredSeller->category?->id ?? '' }}" 
+                                        class="product-category">
+                                            {{ $featuredSeller->category?->name ?? 'Uncategorized' }}
                                         </a>
-                                        @if($seller->regular_price && $seller->sale_price && $seller->regular_price > $seller->sale_price)
-                                            @php
-                                                $discount = round((($seller->regular_price - $seller->sale_price) / $seller->regular_price) * 100);
-                                            @endphp
-                                            <div class="label-group">
-                                                <div class="product-label label-sale">-{{ $discount }}%</div>
-                                            </div>
+                                    </div>
+                                    <h3 class="product-title">
+                                        <a href="{{ route('shop.product.details', $featuredSeller->slug) }}">
+                                            {{ Str::limit($featuredSeller->name, 30) }}
+                                        </a>
+                                    </h3>
+                                    <!-- Updated price display -->
+                                    <div class="price-box">
+                                        @php
+                                            $minSale  = $featuredSeller->sizes->min('sale_price');
+                                            $minReg   = $featuredSeller->sizes->min('regular_price');
+                                            $hasSale  = $minSale < $minReg;
+                                        @endphp
+
+                                        @if($hasSale)
+                                            <span class="product-price">From {{ $currency }}{{ number_format($minSale, 2) }}</span>
+                                            <del class="old-price">{{ $currency }}{{ number_format($minReg, 2) }}</del>
+                                        @else
+                                            <span class="product-price">{{ $currency }}{{ number_format($minSale ?? $minReg, 2) }}</span>
                                         @endif
-                                        <div class="btn-icon-group">
-                                            <a href="#" class="btn-icon btn-add-cart product-type-simple" 
-                                            data-product-id="{{ $seller->id }}">
-                                                <i class="icon-shopping-cart"></i>
-                                            </a>
-                                        </div>
-                                        <a href="{{ route('shop.product.details', $seller->slug ?? $seller->id) }}" class="btn-quickview" title="Quick View" data-product-id="{{ $seller->id }}">
-                                            View
-                                        </a>
-                                    </figure>
-                                    <div class="product-details">
-                                        <div class="category-wrap">
-                                            <div class="category-list">
-                                                <a href="{{ route('shop.index') }}?categories={{ $seller->category->id }}" class="product-category">
-                                                    {{ Str::limit($seller->category->name ?? 'Category', 15) }}
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <h3 class="product-title">
-                                            <a href="{{ route('shop.product.details', $seller->slug ?? $seller->id) }}">
-                                                {{ Str::limit($seller->name, 25) }}
-                                            </a>
-                                        </h3>
-                                        <div class="price-box">
-                                            @if($seller->regular_price && $seller->sale_price && $seller->regular_price > $seller->sale_price)
-                                                <span class="old-price">{{ $currency }}{{ number_format($seller->regular_price, 2) }}</span>
-                                                <span class="product-price">{{ $currency }}{{ number_format($seller->sale_price, 2) }}</span>
-                                            @else
-                                                <span class="product-price">{{ $currency }}{{ number_format($seller->regular_price ?? $seller->sale_price, 2) }}</span>
-                                            @endif
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
                         </div>
                     </div>
-                </div>
+                @endif
+                @if($gridSellers->isNotEmpty())
+                    <div class="col-md-8 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="300">
+                        <div class="custom-products bg-white rounded">
+                            <div class="row">
+                                @foreach($gridSellers as $seller)
+                                    @if($seller->sizes->isNotEmpty())
+                                        <div class="col-6 col-sm-4 col-xl-3">
+                                            <div class="product-default inner-quickview inner-icon">
+                                                <figure>
+                                                    <a href="{{ route('shop.product.details', $seller->slug) }}">
+                                                        <img src="{{ asset('backend/uploads/products/' . $seller->image) }}" 
+                                                            width="217" 
+                                                            height="217" 
+                                                            alt="{{ $seller->name }}"
+                                                            class="w-100">
+                                                    </a>
+                                                    <!-- Updated discount badge -->
+                                                    @php
+                                                        $minSale = $seller->sizes->min('sale_price');
+                                                        $minReg  = $seller->sizes->min('regular_price');
+                                                        $discount = $minSale < $minReg 
+                                                            ? round((($minReg - $minSale) / $minReg) * 100) 
+                                                            : 0;
+                                                    @endphp
+
+                                                    @if($discount > 0)
+                                                        <div class="label-group">
+                                                            <div class="product-label label-sale">-{{ $discount }}%</div>
+                                                        </div>
+                                                    @endif
+                                                    <a href="{{ route('shop.product.details', $seller->slug) }}" 
+                                                    class="btn-quickview" 
+                                                    title="Quick View" 
+                                                    data-product-id="{{ $seller->id }}">
+                                                        View
+                                                    </a>
+                                                </figure>
+                                                <div class="product-details">
+                                                    <div class="category-wrap">
+                                                        <div class="category-list">
+                                                            <a href="{{ route('shop.index') }}?categories={{ $seller->category?->id ?? '' }}" 
+                                                            class="product-category">
+                                                                {{ Str::limit($seller->category?->name ?? 'Uncategorized', 15) }}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <h3 class="product-title">
+                                                        <a href="{{ route('shop.product.details', $seller->slug) }}">
+                                                            {{ Str::limit($seller->name, 25) }}
+                                                        </a>
+                                                    </h3>
+                                                    <!-- Updated price display for grid items -->
+                                                    <div class="price-box">
+                                                        @if($minSale < $minReg)
+                                                            <span class="product-price">From {{ $currency }}{{ number_format($minSale, 2) }}</span>
+                                                            <span class="old-price">{{ $currency }}{{ number_format($minReg, 2) }}</span>
+                                                        @else
+                                                            <span class="product-price">{{ $currency }}{{ number_format($minSale, 2) }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>

@@ -429,7 +429,7 @@
                         <div class="main-content">
                             @yield('main-content')
                             <div class="bottom-page">
-                                <div class="body-text">Copyright © 2025 Fridah Spices</div>
+                                <div class="body-text">Copyright © 2026 Fridah Spices</div>
                             </div>
                         </div>
 

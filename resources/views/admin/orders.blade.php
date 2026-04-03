@@ -46,7 +46,7 @@
                     <thead>
                         <tr>
                             <th>User</th>
-                            <th class="align-left">Phone</th>
+                            <th>Phone</th>
                             <th>Subtotal</th>
                             <th>Total</th>
                             <th>Status</th>

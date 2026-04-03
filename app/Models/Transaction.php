@@ -15,12 +15,20 @@ class Transaction extends Model
      */
     protected $fillable = [
         'user_id',             // ← Required for mass assignment
-        'order_id',            // ← Also needed
+        //'order_id',            // ← Also needed
         'mode',
         'status',
         'paystack_reference',
+        'subtotal',
+        'delivery_fee',
+        'delivery_fee_id',
         'amount',
         'paystack_response',
+        'cart_snapshot',
+    ];
+
+    protected $casts = [
+        'cart_snapshot' => 'array',
     ];
 
     public function user(){

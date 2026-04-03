@@ -44,8 +44,8 @@ class UserController extends Controller
      */
     public function set_default_address(Address $address){
         // Security check: Ensure the address belongs to the logged-in user
-        if ($address->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+        if ((int) $address->user_id !== (int) Auth::id()) {
+            abort(403);
         }
 
         // Start a database transaction for safety

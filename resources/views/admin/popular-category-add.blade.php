@@ -33,8 +33,8 @@
                 @error('count_text') <span class="alert alert-danger text-center">{{ $message }}</span> @enderror
 
                 <fieldset class="name">
-                    <div class="body-title">Link URL <span class="tf-color-1">*</span> <small>(e.g. category/cooking or https://...)</small></div>
-                    <input class="flex-grow" type="text" name="link_url" value="{{ old('link_url') }}" placeholder="category/cooking" required>
+                    <div class="body-title">Link URL <span class="tf-color-1">*</span> <small>(e.g. fridahspice.com/product_xxxx)</small></div>
+                    <input class="flex-grow" type="text" name="link_url" value="{{ old('link_url') }}" placeholder="link to product" required>
                 </fieldset>
                 @error('link_url') <span class="alert alert-danger text-center">{{ $message }}</span> @enderror
 

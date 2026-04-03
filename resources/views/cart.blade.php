@@ -45,8 +45,15 @@
                                 </td>
                                 <td class="product-col">
                                     <h5 class="product-title">
-                                        <a href="{{ route('shop.product.details', ['product_slug' => $cartItem->model->slug]) }}">{{$cartItem->name}}</a>
+                                        <a href="{{ route('shop.product.details', ['product_slug' => $cartItem->model->slug]) }}">
+                                            {{ $cartItem->name }}
+                                        </a>
                                     </h5>
+                                    @if(isset($cartItem->options['size_name']))
+                                        <small class="text-muted">
+                                            Size: {{ $cartItem->options['size_name'] }}
+                                        </small>
+                                    @endif
                                 </td>
                                 <td>{{ $cartItem->price }}</td>
                                 <td>
